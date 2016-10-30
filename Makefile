@@ -17,7 +17,7 @@ QEMU_OPTS		= -enable-kvm -cpu qemu64 -m 128
 all: $(EXEC).efi
 
 run: $(EXEC)-qemu.img
-	@$(QEMU) $(QEMU_OPTS) -drive file=dist/$(EXEC)-qemu.img,if=ide,format=raw
+	@$(QEMU) -bios $(OVMF) -drive file=dist/$(EXEC)-qemu.img,if=ide,format=raw $(QEMU_OPTS) 
 
 $(EXEC)-qemu.img: data.img
 	@dd if=/dev/zero of=dist/$@ bs=512 count=93750 status=none
@@ -29,7 +29,9 @@ $(EXEC)-qemu.img: data.img
 data.img: $(EXEC).efi
 	@dd if=/dev/zero of=/tmp/$@ bs=512 count=91669 status=none
 	@mformat -i /tmp/$@ -h 32 -t 32 -n 64 -c 1
-	@mcopy -i /tmp/$@ dist/$< ::/
+	@mmd -i /tmp/data.img ::/EFI
+	@mmd -i /tmp/data.img ::/EFI/BOOT
+	@mcopy -i /tmp/$@ dist/$< ::/EFI/BOOT/BOOTX64.efi
 	
 $(EXEC).efi: $(EXEC).so
 	@mkdir -p dist
