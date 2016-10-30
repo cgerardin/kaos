@@ -1,0 +1,50 @@
+ARCH			= x86_64
+CC				= clang
+EXEC			= kaos
+EFIINC			= /usr/include/efi
+EFIINCS			= -I$(EFIINC) -I$(EFIINC)/$(ARCH) -I$(EFIINC)/protocol
+EFI_CRT_OBJS	= /usr/lib/crt0-efi-$(ARCH).o
+EFI_LDS			= /usr/lib/elf_$(ARCH)_efi.lds
+CFLAGS			= $(EFIINCS) -xc -std=c11 -fno-stack-protector -fpic -fshort-wchar -mno-red-zone -Wall -Wno-incompatible-library-redeclaration -O2
+ifeq ($(ARCH),x86_64)
+	CFLAGS		+= -DHAVE_USE_MS_ABI
+endif
+LDFLAGS			= -nostdlib -znocombreloc -T $(EFI_LDS) -shared -Bsymbolic -L /usr/lib $(EFI_CRT_OBJS)
+OVMF			= /usr/share/ovmf/OVMF.fd
+QEMU			= qemu-system-$(ARCH)
+QEMU_OPTS		= -enable-kvm -cpu qemu64 -m 128
+
+all: $(EXEC).efi
+
+run: $(EXEC)-qemu.img
+	@$(QEMU) $(QEMU_OPTS) -drive file=dist/$(EXEC)-qemu.img,if=ide,format=raw
+
+$(EXEC)-qemu.img: data.img
+	@dd if=/dev/zero of=dist/$@ bs=512 count=93750 status=none
+	@sudo parted dist/$@ -s -a minimal mklabel gpt
+	@sudo parted dist/$@ -s -a minimal mkpart EFI FAT16 2048s 93716s
+	@sudo parted dist/$@ -s -a minimal toggle 1 boot
+	@dd if=/tmp/$< of=dist/$@ bs=512 count=91669 seek=2048 conv=notrunc status=none
+
+data.img: $(EXEC).efi
+	@dd if=/dev/zero of=/tmp/$@ bs=512 count=91669 status=none
+	@mformat -i /tmp/$@ -h 32 -t 32 -n 64 -c 1
+	@mcopy -i /tmp/$@ dist/$< ::/
+	
+$(EXEC).efi: $(EXEC).so
+	@mkdir -p dist
+	@objcopy -j .text -j .sdata -j .data -j .dynamic -j .dynsym  -j .rel -j .rela -j .reloc --target=efi-app-$(ARCH) src/$< dist/$@
+
+$(EXEC).so: main.o
+	@ld.gold $(LDFLAGS) src/$< -o src/$@ -lefi -lgnuefi
+
+main.o: 
+	@$(CC) $(CFLAGS) -o src/$@ -c src/main.c
+
+clean:
+	@rm -rf src/*.o
+	@rm -rf src/*.so
+
+mrproper: clean
+	@rm -rf dist
+
