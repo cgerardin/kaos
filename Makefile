@@ -13,6 +13,7 @@ LDFLAGS			= -nostdlib -znocombreloc -T $(EFI_LDS) -shared -Bsymbolic -L /usr/lib
 OVMF			= /usr/share/ovmf/OVMF.fd
 QEMU			= qemu-system-$(ARCH)
 QEMU_OPTS		= -enable-kvm -cpu qemu64 -m 128
+SHELL			= /bin/bash
 
 all: $(EXEC).efi
 
