@@ -8,6 +8,8 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     EFI_INPUT_KEY Key;
     
     InitializeLib(ImageHandle, SystemTable);
+    
+    uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut); //How to call ClearScreen() without generate warning ?
 	
 	Print(L"\nWelcome to KaOS v0.0.1, a world full of carots !\n\n");
 	Print(L"Press [H] to halt the system, [R] to reboot...\n");
