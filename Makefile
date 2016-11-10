@@ -15,7 +15,10 @@ QEMU			= qemu-system-$(ARCH)
 QEMU_OPTS		= -enable-kvm -cpu qemu64 -m 128
 SHELL			= /bin/bash
 
-all: $(EXEC).efi
+all: $(EXEC).efi tools
+
+tools:
+	$(MAKE) -C src/tools
 
 run: $(EXEC)-qemu.img
 	@$(QEMU) -bios $(OVMF) -drive file=dist/$(EXEC)-qemu.img,if=ide,format=raw $(QEMU_OPTS) 
@@ -49,7 +52,11 @@ main.o:
 clean:
 	@rm -rf src/*.o
 	@rm -rf src/*.so
+	
+clean-tools:
+	$(MAKE) clean -C src/tools
 
 mrproper: clean
 	@rm -rf dist
+	$(MAKE) mrproper -C src/tools
 
