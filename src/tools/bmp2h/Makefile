@@ -7,7 +7,7 @@ all: $(EXEC)
 	
 $(EXEC): 
 	@mkdir -p ../../../tools/
-	@$(CC) $(CFLAGS) -o ../../../tools/$@ main.c
+	@$(CC) $(CFLAGS) -o ../../../tools/$@ main.c bitmap.c
 
 .PHONY: clean
 
