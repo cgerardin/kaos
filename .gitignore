@@ -2,4 +2,3 @@ dist
 tools
 src/*.o
 src/*.so
-src/tools/*/*.o
