@@ -44,6 +44,8 @@ $(EXEC).so: main.o
 main.o: 
 	@$(CC) $(CFLAGS) -o src/$@ -c src/main.c
 
+.PHONY: clean
+
 clean:
 	@rm -rf src/*.o
 	@rm -rf src/*.so
