@@ -8,7 +8,6 @@ all: $(EXEC)
 $(EXEC): 
 	@mkdir -p ../../../tools/
 	@$(CC) $(CFLAGS) -o ../../../tools/$@ main.c
-	@chmod +x ../../../tools/$@
 
 .PHONY: clean
 
