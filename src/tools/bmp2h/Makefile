@@ -1,4 +1,4 @@
-EXEC			= kaos
+EXEC			= bmp2h
 CC				= clang
 SHELL			= /bin/bash
 
