@@ -17,6 +17,7 @@ SHELL			= /bin/bash
 
 all: $(EXEC).efi tools
 
+.PHONY: tools
 tools:
 	$(MAKE) -C src/tools
 
@@ -48,7 +49,6 @@ main.o:
 	@$(CC) $(CFLAGS) -o src/$@ -c src/main.c
 
 .PHONY: clean
-
 clean:
 	@rm -rf src/*.o
 	@rm -rf src/*.so
