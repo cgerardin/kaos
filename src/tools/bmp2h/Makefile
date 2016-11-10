@@ -1,12 +1,14 @@
 EXEC			= bmp2h
 CC				= clang
+CFLAGS			= -std=c11 -Wall -O3
 SHELL			= /bin/bash
 
 all: $(EXEC)
 	
 $(EXEC): 
 	@mkdir -p ../../../tools/
-	@$(CC) $(CFLAGS) -o ../../../tools/$@ -c main.c
+	@$(CC) $(CFLAGS) -o ../../../tools/$@ main.c
+	@chmod +x ../../../tools/$@
 
 .PHONY: clean
 
