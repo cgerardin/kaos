@@ -2,7 +2,7 @@
 #define H_BITMAP
 
 typedef struct {
-	unsigned char signature[3];
+	char signature[3];
 	unsigned long size;
 } bmp;
 
