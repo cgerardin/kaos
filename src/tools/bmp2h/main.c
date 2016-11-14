@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "bitmap.h"
 
 int main(int argc, char *argv[]) {
@@ -15,15 +16,20 @@ int main(int argc, char *argv[]) {
 	if(bmpFile != NULL) {
 	
 		bmp test = read_bitmap(bmpFile);
-		printf("%s\n", test.signature);
-
 		fclose(bmpFile);
 		
+		if(strcmp(test.signature, "BM") == 0) {
+		
+			printf("Windows Bitmap file (%.1f KB)\n", (float)test.size / 1000.);
+			
+		} else {
+			printf("Invalid file format\n");
+			return -1;
+		}
+		
 	} else {
-	
 		printf("Unable to open file %s\n", argv[1]);
 		return -1;
-		
 	}
 
 	return 0;
