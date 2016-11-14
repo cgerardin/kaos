@@ -1,11 +1,10 @@
 #ifndef H_BITMAP
 #define H_BITMAP
 
-typedef struct bmp bmp;
-struct bmp {
+typedef struct {
 	char signature[3];
 	int size;
-};
+} bmp;
 
 bmp read_bitmap(FILE *bmpFile);
 
