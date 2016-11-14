@@ -18,6 +18,8 @@ int main(int argc, char *argv[]) {
 		bmp test = read_bitmap(bmpFile);
 		fclose(bmpFile);
 		
+		printf("Depth : %i - Compression : %ld\n", test.depth, test.compression);
+		
 		if(strcmp(test.signature, "BM") == 0 && test.depth == 24 && test.compression == 0) {
 		
 			printf("Windows Bitmap file (%.1f KB)\n", (float)test.size / 1000.);

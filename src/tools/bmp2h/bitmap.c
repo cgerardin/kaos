@@ -11,6 +11,7 @@ bmp read_bitmap(FILE *bmpFile) {
 	if(fread(buffer, sizeof(buffer), 1, bmpFile) > 0) {
 	
 		unsigned long dataOffset=0;
+		unsigned long imageData=0;
 		
 		for(int i=0; i<sizeof(buffer); i++) {
 		
@@ -27,8 +28,16 @@ bmp read_bitmap(FILE *bmpFile) {
 			if(i==28) memcpy(&bmpData.depth, buffer+i, 2); // Depth
 			if(i==30) memcpy(&bmpData.compression, buffer+i, 4); // Compression
 			
+			
+			if(i>=1078) {
+			
+				memcpy(&imageData, buffer+i, 4);
+				printf("%ld ", imageData);
+			
+			}
+			
 		};
-
+		
 	}
 	
 	return bmpData;
