@@ -1,4 +1,6 @@
+#include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "bitmap.h"
 
 bmp read_bitmap(FILE *bmpFile) {
@@ -8,9 +10,9 @@ bmp read_bitmap(FILE *bmpFile) {
 	
 	if(fread(buffer, sizeof(buffer), 1, bmpFile) > 0) {
 		
-		bmpData.signature[0] = buffer[0];
-		bmpData.signature[1] = buffer[1];
+		memcpy(bmpData.signature, buffer, 2);
 		bmpData.signature[2] = '\0';
+		memcpy(&bmpData.size, buffer+2, 4);
 
 	}
 	
