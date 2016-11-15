@@ -3,8 +3,34 @@
 #include <string.h>
 #include "bitmap.h"
 
-bmp read_bitmap(FILE *bmpFile) {
+BMP read_bitmap(FILE *bmpFile) {
 
+	BMP bmpData;
+
+	if (fread(&bmpData.header, sizeof(bmpData.header), 1, bmpFile)<1) {
+        printf("Erreur de lecture du fichier (1)\n");
+    } else {
+        printf("L'offeset du premier octet est : %lu\n", bmpData.header.data_offset);
+        printf("Magic number: %c%c\n", bmpData.header.magic_number[0], bmpData.header.magic_number[1]);
+    }
+    
+    if (fread(&bmpData.image_header, sizeof(bmpData.image_header), 1, bmpFile)<1) {
+        printf("Erreur de lecture du fichier (2)\n");
+    } else {
+        printf("Largeur : %lu\n", bmpData.image_header.width);
+    }
+    
+    fseek(bmpFile, bmpData.header.data_offset, SEEK_SET);
+
+	BMP_COLOR pixel;
+	int i=0;
+	while(fread(&pixel, sizeof(pixel), 1, bmpFile)>0) {
+        printf("Pixel : %d %d %d\n", pixel.r, pixel.g, pixel.b);
+        i++;
+    }
+	
+
+	/*
 	unsigned char buffer[10000];
 	unsigned long data_offset=0;
 	bmp bmpData = {"", 0, 0, 0, 0, 0, 0, {{0}, {0}, {0}}};
@@ -41,6 +67,8 @@ bmp read_bitmap(FILE *bmpFile) {
 		//if(bmpData.size != 0 && i>=bmpData.size) break;
 	
 	}
+	
+	*/
 	
 	return bmpData;
 

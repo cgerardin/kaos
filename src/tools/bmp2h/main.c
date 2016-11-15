@@ -15,19 +15,18 @@ int main(int argc, char *argv[]) {
 	
 	if(bmpFile != NULL) {
 	
-		bmp test = read_bitmap(bmpFile);
+		//BMP test = 
+		read_bitmap(bmpFile);
 		fclose(bmpFile);
 		
-		printf("Depth : %i - Compression : %ld\n", test.depth, test.compression);
-		
-		if(strcmp(test.signature, "BM") == 0 && test.depth == 24 && test.compression == 0) {
+		/*if(strcmp(test.signature, "BM") == 0 && test.depth == 24 && test.compression == 0) {
 		
 			printf("Windows Bitmap file (%.1f KB)\n", (float)test.size / 1000.);
 			
 		} else {
 			printf("Invalid file format\n");
 			return -1;
-		}
+		}*/
 		
 	} else {
 		printf("Unable to open file %s\n", argv[1]);
