@@ -1,6 +1,12 @@
 EXEC			= bmp2h
 CC				= clang
-CFLAGS			= -std=c11 -Wall -O3
+DEBUG			= true
+CFLAGS			= -std=c11 -Wall
+ifeq ($(DEBUG), true)
+	CFLAGS		+= -g
+else
+	CFLAGS		+= -O3
+endif
 SHELL			= /bin/bash
 
 all: $(EXEC)
