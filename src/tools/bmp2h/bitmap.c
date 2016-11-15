@@ -8,13 +8,13 @@ bmp read_bitmap(FILE *bmpFile) {
 	unsigned char buffer[10000];
 	bmp bmpData = {"", 0, 0, 0, 0, 0, 0};
 	
-	if(fread(buffer, sizeof(buffer), 1, bmpFile) > 0) {
+	if(fread(buffer, sizeof(buffer), 1, bmpFile) >= 0) {
 	
 		unsigned long dataOffset=0;
 		unsigned long imageData=0;
 		
 		for(int i=0; i<sizeof(buffer); i++) {
-		
+
 			// Signature
 			if(i==0) {
 				memcpy(bmpData.signature, buffer, 2);
