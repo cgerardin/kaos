@@ -6,9 +6,9 @@
 bmp read_bitmap(FILE *bmpFile) {
 
 	unsigned char buffer[10000];
-	bmp bmpData = {"", 0, 0, 0, 0, 0, 0};
+	bmp bmpData = {"", 0, 0, 0, 0, 0, 0, {{0}, {0}, {0}}};
 	
-	if(fread(buffer, sizeof(buffer), 1, bmpFile) >= 0) {
+	if(fread(buffer, sizeof(buffer), 1, bmpFile) == 0) {
 	
 		unsigned long dataOffset=0;
 		unsigned long imageData=0;
@@ -32,7 +32,6 @@ bmp read_bitmap(FILE *bmpFile) {
 			if(i>=1078) {
 			
 				memcpy(&imageData, buffer+i, 4);
-				printf("%ld ", imageData);
 			
 			}
 			
