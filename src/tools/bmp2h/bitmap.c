@@ -29,14 +29,33 @@ BMP read_bitmap(FILE *bmpFile) {
 	
 	fseek(bmpFile, bmpData.data_offset, SEEK_SET);
 	
-	// Get piexls informations
-	// Todo : align bits to x4 for each line of the picture
+	// Get pixels informations
+	unsigned char lines[1000][1000];
 	BMP_COLOR pixel;
-	int i=0;
-	while(fread(&pixel, sizeof(pixel), 1, bmpFile)) {
-        printf("Pixel[%d] : %d %d %d\n", i, pixel.r, pixel.g, pixel.b);
-        i++;
-    }
+	int current_pixel=0;
+
+	for(int i=0; i<bmpData.height; i++) {
+		
+		for(int j=0; j<bmpData.width*3; j+=3) {
+		
+			fread(&lines[i][j], sizeof(char), 1, bmpFile);
+			fread(&lines[i][j+1], sizeof(char), 1, bmpFile);
+			fread(&lines[i][j+2], sizeof(char), 1, bmpFile);
+			
+		}
+		
+		for(int j=0+bmpData.width%4; j<bmpData.width*3 - bmpData.width%4; j+=3) {
+		
+			pixel.g = lines[i][j+0];
+			pixel.b = lines[i][j+1];
+			pixel.r = lines[i][j+2];
+			bmpData.image_data[current_pixel] = pixel;
+			
+			current_pixel++;
+		}
+		
+		current_pixel++;
+	}
 	
 	return bmpData;
 

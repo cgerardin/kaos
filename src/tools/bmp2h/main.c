@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
 		printf("Usage : %s [bmpfile]\n", argv[0]);
 		return -1;
 		
-	}	
+	}
 
 	FILE *bmpFile = fopen(argv[1], "rb");
 	
@@ -21,6 +21,24 @@ int main(int argc, char *argv[]) {
 		
 			printf("Windows Bitmap file (%dx%d px, %d bpp, %.1f KB)\n", 
 				bitmap.width, bitmap.height, bitmap.depth, (float)bitmap.size / 1000.);
+			
+			/* 
+			 * Display pixels
+			 * TODO : invert image horizontaly
+			 */
+			int j=0;
+			for(int i=bitmap.height+bitmap.width-1; i>=0; i--) {
+			
+				printf("%d %d %d   ", bitmap.image_data[i].r, bitmap.image_data[i].g, bitmap.image_data[i].b);
+				
+				if(j==bitmap.width-1) {
+					printf("\n");
+					j=0;
+				} else {				
+					j++;
+				}
+				
+			}
 			
 		} else {
 			printf("Invalid file format\n");
