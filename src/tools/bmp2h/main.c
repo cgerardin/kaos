@@ -19,22 +19,8 @@ int main(int argc, char *argv[]) {
 		
 		if(bitmap.magic_number == BMP_BM && bitmap.depth == 24 && bitmap.compression == 0) {
 		
-			printf("Windows Bitmap file (%.1f KB)\n\n", (float)bitmap.size / 1000.);
-			
-			printf("Size : %u\n", bitmap.size);
-			printf("Reserved : %u%u\n", bitmap.reserved1, bitmap.reserved2);
-			printf("Offset : %u\n", bitmap.data_offset);
-			printf("Header size : %d\n", bitmap.image_header_size);
-			printf("Width : %d\n", bitmap.width);
-			printf("Height : %d\n", bitmap.height);
-			printf("Layouts : %d\n", bitmap.layouts);
-			printf("Depth : %d\n", bitmap.depth);
-			printf("Compression : %d\n", bitmap.compression);
-			printf("Image size : %d\n", bitmap.image_size);
-			printf("Horizontal Res : %d\n", bitmap.horizontal_res);
-			printf("Vertical Res : %d\n", bitmap.vertical_res);
-			printf("Palette colors : %d\n", bitmap.palette_colors);
-			printf("Important palette colors : %d\n", bitmap.important_palette_colors);
+			printf("Windows Bitmap file (%dx%d px, %d bpp, %.1f KB)\n", 
+				bitmap.width, bitmap.height, bitmap.depth, (float)bitmap.size / 1000.);
 			
 		} else {
 			printf("Invalid file format\n");
