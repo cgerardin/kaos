@@ -26,9 +26,18 @@ BMP read_bitmap(FILE *bmpFile) {
 	memcpy(&bmpData.vertical_res, bmpHeader+42, 4);
 	memcpy(&bmpData.palette_colors, bmpHeader+46, 4);
 	memcpy(&bmpData.important_palette_colors, bmpHeader+50, 4);
-
-	// todo : read image data
-		
+	
+	fseek(bmpFile, bmpData.data_offset, SEEK_SET);
+	
+	// Get piexls informations
+	// Todo : align bits to x4 for each line of the picture
+	BMP_COLOR pixel;
+	int i=0;
+	while(fread(&pixel, sizeof(pixel), 1, bmpFile)) {
+        printf("Pixel[%d] : %d %d %d\n", i, pixel.r, pixel.g, pixel.b);
+        i++;
+    }
+	
 	return bmpData;
 
 }
