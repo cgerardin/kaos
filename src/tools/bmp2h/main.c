@@ -27,9 +27,19 @@ int main(int argc, char *argv[]) {
 			 * TODO : invert image horizontaly
 			 */
 			int j=0;
-			for(int i=bitmap.height+bitmap.width-1; i>=0; i--) {
+			unsigned char r, g, b;
 			
-				printf("%d %d %d   ", bitmap.image_data[i].r, bitmap.image_data[i].g, bitmap.image_data[i].b);
+			for(int i=bitmap.height*bitmap.width-1; i>=0; i--) {
+			
+				r = bitmap.image_data[i].r;
+				g = bitmap.image_data[i].g;
+				b = bitmap.image_data[i].b;
+			
+				if(r>127 || g>127 || b>127) {
+					printf("+");
+				} else {
+					printf(" ");
+				}
 				
 				if(j==bitmap.width-1) {
 					printf("\n");
