@@ -1,38 +1,32 @@
 #ifndef H_BITMAP
 #define H_BITMAP
 
+#define BMP_BM 0x4D42
+
 typedef struct {
 	unsigned char b;
 	unsigned char g;
-	unsigned char r;	
+	unsigned char r;
 } BMP_COLOR;
 
 typedef struct {
-	unsigned char magic_number[2];
-	unsigned long size;
-	unsigned int reserved1;
-	unsigned int reserved2;
-	unsigned long  data_offset;
-} BMP_HEADER;
-
-typedef struct {
-	unsigned long image_header_size;
-	unsigned long width;
-	unsigned long height;
+	unsigned short magic_number;
+	unsigned int size;
+	unsigned short reserved1;
+	unsigned short reserved2;
+	unsigned int  data_offset;
+	unsigned int image_header_size;
+	unsigned int width;
+	unsigned int height;
 	unsigned int layouts; // 1
-	unsigned int depth;
-	unsigned long compression;
-	unsigned long image_size;
-	unsigned long horizontal_res;
-	unsigned long vertical_res;
-	unsigned long palette_colors;
-	unsigned long important_palette_colors;
-} BMP_IMAGE_HEADER;
-
-typedef struct {
-	BMP_HEADER header;
-	BMP_IMAGE_HEADER image_header;
-	BMP_COLOR image[100000];
+	unsigned short depth;
+	unsigned int compression;
+	unsigned int image_size;
+	unsigned int horizontal_res;
+	unsigned int vertical_res;
+	unsigned int palette_colors;
+	unsigned int important_palette_colors;
+	BMP_COLOR image_data[100000];
 } BMP;
 
 BMP read_bitmap(FILE *bmpFile);
