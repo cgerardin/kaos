@@ -34,10 +34,14 @@ int main(int argc, char *argv[]) {
 				g = bitmap.image_data[i].g;
 				b = bitmap.image_data[i].b;
 
-				if(r>100 || g>100 || b>100) {
+		        if(r>200 || g>200 || b>200) {
 					printf("#");
-				} else {
+				} else if(r>100 || g>100 || b>100) {
+					printf("+");
+				} else if(r>50 || g>50 || b>50) {
 					printf(".");
+				} else {
+					printf(" ");
 				}
 
 				if(j==bitmap.width) {
