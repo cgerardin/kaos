@@ -35,10 +35,10 @@ int main(int argc, char *argv[]) {
 				g = bitmap.image_data[i].g;
 				b = bitmap.image_data[i].b;
 			
-				if(r>127 || g>127 || b>127) {
-					printf("+");
+				if(r>100 || g>100 || b>100) {
+					printf("#");
 				} else {
-					printf(" ");
+					printf(".");
 				}
 				
 				if(j==bitmap.width-1) {
