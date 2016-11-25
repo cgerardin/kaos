@@ -29,16 +29,18 @@ BMP read_bitmap(FILE *bmpFile) {
 	
 	fseek(bmpFile, bmpData.data_offset, SEEK_SET);
 	
-	// Get pixels informations (mirroring)
+	// Get pixels informations (with mirroring)
 	unsigned char lines[1000][1000];
-	BMP_COLOR pixel;
 	int current_pixel=bmpData.width*bmpData.height-1;
+	int j=0;
+	BMP_COLOR pixel;
+	char empty;
 	
 	// Lines
 	for(int i=0; i<bmpData.height; i++) {
 		
 		// Current line's pixels
-		for(int j=bmpData.width*3-1; j>0; j-=3) {
+		for(j=bmpData.width*3; j>=3; j-=3) {
 		
 			fread(&lines[i][j], sizeof(char), 1, bmpFile);
 			fread(&lines[i][j-1], sizeof(char), 1, bmpFile);
@@ -46,17 +48,23 @@ BMP read_bitmap(FILE *bmpFile) {
 			
 		}
 		
-		// Current line's padding correction
-		for(int j=bmpData.width%4; j<bmpData.width*3 - bmpData.width%4; j+=3) {
+		if(current_pixel <= bmpData.width*bmpData.height) {
+			// Current line's padding correction
+			for(j=0; j<bmpData.width%4; j++) {
+				fread(&empty, sizeof(char), 1, bmpFile);
+				printf("empty %d\n", j);
+			}
+		}
 		
-			pixel.g = lines[i][j+0];
+		// Fill structures
+		for(j=0; j<bmpData.width*3; j+=3) {
+			pixel.g = lines[i][j];
 			pixel.b = lines[i][j+1];
 			pixel.r = lines[i][j+2];
 			bmpData.image_data[current_pixel] = pixel;
-			
-			current_pixel--;
+			current_pixel -= 1;
 		}
-
+		
 	}
 	
 	return bmpData;

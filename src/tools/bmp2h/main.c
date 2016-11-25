@@ -41,14 +41,14 @@ int main(int argc, char *argv[]) {
 				} else if(r>50 || g>50 || b>50) {
 					printf(".");
 				} else {
-					printf(" ");
+					printf("_");
 				}
 
 				if(j==bitmap.width) {
 					printf("\n");
 					j=1;
 				} else {
-					j++;
+					j++; 	
 				}
 
 			}
