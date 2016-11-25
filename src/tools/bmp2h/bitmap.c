@@ -32,7 +32,7 @@ BMP read_bitmap(FILE *bmpFile) {
 	// Get pixels informations
 	unsigned char lines[1000][1000];
 	BMP_COLOR pixel;
-	int current_pixel=0;
+	int current_pixel=bmpData.width*bmpData.height-1;
 	
 	// Lines
 	for(int i=0; i<bmpData.height; i++) {
@@ -54,7 +54,7 @@ BMP read_bitmap(FILE *bmpFile) {
 			pixel.r = lines[i][j+2];
 			bmpData.image_data[current_pixel] = pixel;
 			
-			current_pixel++;
+			current_pixel--;
 		}
 
 	}

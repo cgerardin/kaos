@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 			int j=0;
 			unsigned char r, g, b;
 			
-			for(int i=bitmap.height*bitmap.width-1; i>=0; i--) {
+			for(int i=0; i<=bitmap.height*bitmap.width-1; i++) {
 			
 				r = bitmap.image_data[i].r;
 				g = bitmap.image_data[i].g;
