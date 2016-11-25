@@ -33,9 +33,11 @@ BMP read_bitmap(FILE *bmpFile) {
 	unsigned char lines[1000][1000];
 	BMP_COLOR pixel;
 	int current_pixel=0;
-
+	
+	// Lines
 	for(int i=0; i<bmpData.height; i++) {
 		
+		// Columns
 		for(int j=0; j<bmpData.width*3; j+=3) {
 		
 			fread(&lines[i][j], sizeof(char), 1, bmpFile);
@@ -44,6 +46,7 @@ BMP read_bitmap(FILE *bmpFile) {
 			
 		}
 		
+		// Padding correction
 		for(int j=0+bmpData.width%4; j<bmpData.width*3 - bmpData.width%4; j+=3) {
 		
 			pixel.g = lines[i][j+0];
@@ -53,8 +56,7 @@ BMP read_bitmap(FILE *bmpFile) {
 			
 			current_pixel++;
 		}
-		
-		current_pixel++;
+
 	}
 	
 	return bmpData;
