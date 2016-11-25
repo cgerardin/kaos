@@ -23,31 +23,30 @@ int main(int argc, char *argv[]) {
 				bitmap.width, bitmap.height, bitmap.depth, (float)bitmap.size / 1000.);
 			
 			/* 
-			 * Display pixels
-			 * TODO : invert image horizontaly
+			 * Display picture
 			 */
-			int j=0;
+			int j=1;
 			unsigned char r, g, b;
 			
 			for(int i=0; i<=bitmap.height*bitmap.width-1; i++) {
-			
+
 				r = bitmap.image_data[i].r;
 				g = bitmap.image_data[i].g;
 				b = bitmap.image_data[i].b;
-			
+
 				if(r>100 || g>100 || b>100) {
 					printf("#");
 				} else {
 					printf(".");
 				}
-				
-				if(j==bitmap.width-1) {
+
+				if(j==bitmap.width) {
 					printf("\n");
-					j=0;
-				} else {				
+					j=1;
+				} else {
 					j++;
 				}
-				
+
 			}
 			
 		} else {

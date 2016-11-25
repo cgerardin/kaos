@@ -29,7 +29,7 @@ BMP read_bitmap(FILE *bmpFile) {
 	
 	fseek(bmpFile, bmpData.data_offset, SEEK_SET);
 	
-	// Get pixels informations
+	// Get pixels informations (mirroring)
 	unsigned char lines[1000][1000];
 	BMP_COLOR pixel;
 	int current_pixel=bmpData.width*bmpData.height-1;
@@ -37,17 +37,17 @@ BMP read_bitmap(FILE *bmpFile) {
 	// Lines
 	for(int i=0; i<bmpData.height; i++) {
 		
-		// Columns
-		for(int j=0; j<bmpData.width*3; j+=3) {
+		// Current line's pixels
+		for(int j=bmpData.width*3-1; j>0; j-=3) {
 		
 			fread(&lines[i][j], sizeof(char), 1, bmpFile);
-			fread(&lines[i][j+1], sizeof(char), 1, bmpFile);
-			fread(&lines[i][j+2], sizeof(char), 1, bmpFile);
+			fread(&lines[i][j-1], sizeof(char), 1, bmpFile);
+			fread(&lines[i][j-2], sizeof(char), 1, bmpFile);
 			
 		}
 		
-		// Padding correction
-		for(int j=0+bmpData.width%4; j<bmpData.width*3 - bmpData.width%4; j+=3) {
+		// Current line's padding correction
+		for(int j=bmpData.width%4; j<bmpData.width*3 - bmpData.width%4; j+=3) {
 		
 			pixel.g = lines[i][j+0];
 			pixel.b = lines[i][j+1];
