@@ -36,8 +36,9 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	}
 	
 	// Exiting UEFI land
-	Print(L"Booting the kernel...");
+	
 	uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
+	Print(L"Booting the kernel...");
 
 	unsigned long mapSize = 0;
 	unsigned long mapKey;
@@ -53,7 +54,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	uefi_call_wrapper(SystemTable->BootServices->ExitBootServices, 2, ImageHandle, mapKey);
 
 	/*
-	 * Kernel main
+	 * Kernel main. In the futur, must be loaded from external file...
 	 */
 
 	while(1);
