@@ -1,6 +1,8 @@
 #include <efi.h>
 #include <efilib.h>
 #include <efiprot.h>
+#include "main.h"
+#include "logo.h"
 
 EFI_STATUS
 efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
@@ -11,6 +13,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     
     uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut); //How to call ClearScreen() without generate warning ?
 	
+	Print(LOGO);
 	Print(L"\nWelcome to KaOS v0.0.1, the Karrot OS !\n\n");
 	Print(L"Press [H] to halt the system, [R] to reboot...\n");
 	
@@ -30,7 +33,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	} else {
 	
 		Print(L"Error : Key pressed is '%c'\n", Key.UnicodeChar);
-		return -1;
+		return EFI_UNSUPPORTED;
 	
 	}
 	
