@@ -76,19 +76,36 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	 * Kernel main. In the futur, must be loaded from external file...
 	 */
 	 
-	int k;
+	int k,l;
 	// Blank screen
-	for(k=0; k<DESIRED_HREZ*DESIRED_VREZ; k++) { putPixel(gop->Mode->FrameBufferBase, k, 0, 0x00ffffff); }
+	for(k=0; k<DESIRED_HREZ*DESIRED_VREZ; k++) { putPixel(gop->Mode->FrameBufferBase, k, 0, 0x00000000); }
 	
-	// Draw a 100x100 orange box...
-	for(k=0; k<100; k++) { 
-		putPixel(gop->Mode->FrameBufferBase, 10+k, 10, 0x00ff8000);
-		putPixel(gop->Mode->FrameBufferBase, 10+k, 110, 0x00ff8000);
-		putPixel(gop->Mode->FrameBufferBase, 10, 10+k, 0x00ff8000);
-		putPixel(gop->Mode->FrameBufferBase, 110, 10+k, 0x00ff8000);
+	// Draw a 50x20 green box...
+	for(l=0; l<20; l++) {
+		for(k=0; k<50; k++) {
+			putPixel(gop->Mode->FrameBufferBase, 10+k, 10+l, 0x00336600);
+		}
 	}
 	
-	putString(gop->Mode->FrameBufferBase, 10, 150, 0x00000000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789\0");
+	// Draw a 50x80 orange box...
+	for(l=0; l<80; l++) {
+		for(k=0; k<50; k++) {
+			putPixel(gop->Mode->FrameBufferBase, 10+k, 30+l, 0x00ff8000);
+		}
+	}
+
+	// ...the OS name and version...
+	putString(gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, "KaOS v0.2\0");
+
+	// ...a line...
+	for(k=0; k<DESIRED_HREZ-20; k++) {
+		putPixel(gop->Mode->FrameBufferBase, 10+k, 120, 0x00ff8000);
+	}
+
+	// ...and the some font's samples.
+	putString(gop->Mode->FrameBufferBase, 10, 150, 0x00ffffff, "ABCDEFGHIJKLMNOPQRSTUVWXYZ\0");
+	putString(gop->Mode->FrameBufferBase, 10, 166, 0x00ffffff, "abcdefghijklmnopqrstuvwxys\0");
+	putString(gop->Mode->FrameBufferBase, 10, 182, 0x00ffffff, "0123456789 .,;:#\0");
 	
 	while(1);
 
