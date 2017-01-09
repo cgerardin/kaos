@@ -3,6 +3,7 @@
 #include <efiprot.h>
 #include "main.h"
 #include "logo.h"
+#include "drivers/gop.h"
 
 EFI_STATUS
 efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
@@ -88,15 +89,6 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	}
 	
 	while(1);
-
-}
-
-void putPixel(EFI_PHYSICAL_ADDRESS lfb_base_addr, uint32_t x, uint32_t y, uint32_t color) {
-
-    uint32_t* at = (uint32_t*)lfb_base_addr;
-
-    at += (x+y*DESIRED_HREZ);
-    *at++ = color;
 
 }
 

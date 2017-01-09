@@ -21,6 +21,7 @@ ifeq ($(KVM),true)
 endif
 SHELL			= /bin/bash
 
+
 all: $(EXEC).efi tools
 
 .PHONY: tools
@@ -48,16 +49,21 @@ $(EXEC).efi: $(EXEC).so
 	@mkdir -p dist
 	@objcopy -j .text -j .sdata -j .data -j .dynamic -j .dynsym  -j .rel -j .rela -j .reloc --target=efi-app-$(ARCH) src/$< dist/$@
 
-$(EXEC).so: main.o
-	@ld.gold $(LDFLAGS) src/$< -o src/$@ -lefi -lgnuefi
+$(EXEC).so: main.o drivers/gop.o
+	@ld.gold $(LDFLAGS) src/$< src/drivers/*.o -o src/$@ -lefi -lgnuefi
 
 main.o: 
 	@$(CC) $(CFLAGS) -o src/$@ -c src/main.c
+
+drivers/gop.o:
+	@$(CC) $(CFLAGS) -o src/$@ -c src/drivers/gop.c
 
 .PHONY: clean
 clean:
 	@rm -rf src/*.o
 	@rm -rf src/*.so
+	@rm -rf src/drivers/*.o
+	@rm -rf src/drivers/*.so
 	
 clean-tools:
 	$(MAKE) clean -C src/tools
