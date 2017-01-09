@@ -40,7 +40,7 @@ void putString(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32
 		
 		putChar(fb_base_addr, x, y, color, string[p]);
 		p++;
-		x+=12;
+		x+=8;
 	
 	}
 
