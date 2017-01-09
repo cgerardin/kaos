@@ -16,11 +16,11 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     
     uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
 	
-	Print(LOGO);
+	//Print(LOGO);
 	Print(L"\nWelcome to KaOS v0.0.1, the Karrot OS !\n\n");
 	Print(L"Press any key to boot, [H] to halt the system, [R] to reboot...\n");
 	
-	EFI_INPUT_KEY Key;
+	/*EFI_INPUT_KEY Key;
 	while ((SystemTable->ConIn->ReadKeyStroke(SystemTable->ConIn, &Key)) == EFI_NOT_READY);
 
 	if(Key.UnicodeChar == 'h') {
@@ -34,7 +34,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		Print(L"Rebooting the system...\n");
 		return EFI_SUCCESS;
 	
-	}
+	}*/
 	
 	// Initialize framebuffer (GOP)
 	
@@ -87,6 +87,8 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		putPixel(gop->Mode->FrameBufferBase, 10, 10+k, 0x00ff8000);
 		putPixel(gop->Mode->FrameBufferBase, 110, 10+k, 0x00ff8000);
 	}
+	
+	putString(gop->Mode->FrameBufferBase, 10, 150, 0x00000000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789\0");
 	
 	while(1);
 
