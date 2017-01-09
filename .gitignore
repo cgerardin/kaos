@@ -1,5 +1,5 @@
-dist
-tools
-src/*.o
-src/*.so
-src/drivers/*.o
+/dist
+/tools
+/src/*.o
+/src/*.so
+/src/drivers/*.o
