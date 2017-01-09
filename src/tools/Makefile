@@ -1,4 +1,4 @@
-TOOLS	= bmp2h
+TOOLS	= bmp2h bmp2font
 SHELL	= /bin/bash
 
 all:
