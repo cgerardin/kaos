@@ -1,6 +1,8 @@
 ARCH			= x86_64
 CC				= clang
 EXEC			= kaos
+KVM				= false
+
 EFIINC			= /usr/include/efi
 EFIINCS			= -I$(EFIINC) -I$(EFIINC)/$(ARCH) -I$(EFIINC)/protocol
 EFI_CRT_OBJS	= /usr/lib/crt0-efi-$(ARCH).o
@@ -10,9 +12,13 @@ ifeq ($(ARCH),x86_64)
 	CFLAGS		+= -DHAVE_USE_MS_ABI
 endif
 LDFLAGS			= -nostdlib -znocombreloc -T $(EFI_LDS) -shared -Bsymbolic -L /usr/lib $(EFI_CRT_OBJS)
+
 OVMF			= /usr/share/ovmf/OVMF.fd
 QEMU			= qemu-system-$(ARCH)
-QEMU_OPTS		= -enable-kvm -cpu qemu64 -m 128
+QEMU_OPTS		= -cpu qemu64 -m 128
+ifeq ($(KVM),true)
+	QEMU_OPTS	+= -enable-kvm
+endif
 SHELL			= /bin/bash
 
 all: $(EXEC).efi tools
