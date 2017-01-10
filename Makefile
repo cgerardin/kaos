@@ -49,7 +49,7 @@ $(EXEC).efi: $(EXEC).so
 	@mkdir -p dist
 	@objcopy -j .text -j .sdata -j .data -j .dynamic -j .dynsym  -j .rel -j .rela -j .reloc --target=efi-app-$(ARCH) src/$< dist/$@
 
-$(EXEC).so: main.o drivers/gop.o
+$(EXEC).so: main.o drivers/gop.o drivers/io.o drivers/keyboard.o
 	@ld.gold $(LDFLAGS) src/$< src/drivers/*.o -o src/$@ -lefi -lgnuefi
 
 main.o: 
@@ -57,6 +57,12 @@ main.o:
 
 drivers/gop.o:
 	@$(CC) $(CFLAGS) -o src/$@ -c src/drivers/gop.c
+
+drivers/io.o:
+	@$(CC) $(CFLAGS) -o src/$@ -c src/drivers/io.c
+
+drivers/keyboard.o:
+	@$(CC) $(CFLAGS) -o src/$@ -c src/drivers/keyboard.c
 
 .PHONY: clean
 clean:

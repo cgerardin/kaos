@@ -3,7 +3,9 @@
 #include <efiprot.h>
 #include "main.h"
 #include "logo.h"
+#include "drivers/io.h"
 #include "drivers/gop.h"
+#include "drivers/keyboard.h"
 
 EFI_STATUS
 efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
@@ -104,10 +106,18 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
 	// ...and the some font's samples.
 	putString(gop->Mode->FrameBufferBase, 10, 150, 0x00ffffff, "ABCDEFGHIJKLMNOPQRSTUVWXYZ\0");
-	putString(gop->Mode->FrameBufferBase, 10, 166, 0x00ffffff, "abcdefghijklmnopqrstuvwxys\0");
-	putString(gop->Mode->FrameBufferBase, 10, 182, 0x00ffffff, "0123456789 .,;:#\0");
+	putString(gop->Mode->FrameBufferBase, 10, 166, 0x00ffffff, "abcdefghijklmnopqrstuvwxyz\0");
+	putString(gop->Mode->FrameBufferBase, 10, 182, 0x00ffffff, "0123456789 .,;:@#\0");
+	putString(gop->Mode->FrameBufferBase, 10, 198, 0x00ffffff, "Servez a ce monsieur une biere et un kiwi.\0");
 	
-	while(1);
+	// Read keyboard raw input
+	int kposition=10;
+	while(1){
+
+		putChar(gop->Mode->FrameBufferBase, kposition, 214, 0x00ff0000, getChar());
+		kposition+=8;
+	
+	}
 
 }
 
