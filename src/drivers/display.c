@@ -38,13 +38,30 @@ void putChar(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t
 
 void putString(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t color, char *string) {
 
+	uint32_t oldx=x;
+	
 	int p=0;
 	while(string[p]!='\0') {
 		
-		putChar(fb_base_addr, x, y, color, string[p]);
+		switch(string[p]) {
+		
+			case '\n':
+				x=oldx;
+				y+=16;
+				break;
+				
+			case '\t':
+				x+=32;
+				break;
+			
+			default:
+				putChar(fb_base_addr, x, y, color, string[p]);
+				x+=8;
+				if(x>KAOS_SCREEN_WIDTH) break;
+				
+		}
+		
 		p++;
-		x+=8;
-		if(x>KAOS_SCREEN_WIDTH) break;
 	
 	}
 

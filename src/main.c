@@ -3,8 +3,26 @@
 #include <efiprot.h>
 #include "main.h"
 #include "logo.h"
+#include "drivers/io.h"
 #include "drivers/display.h"
 #include "drivers/keyboard.h"
+
+unsigned short getCmosMemSize() {
+
+	unsigned short total;
+	unsigned char lowmem, highmem;
+
+	outb(0x70, 0x30);
+	lowmem = inb(0x71);
+	outb(0x70, 0x31);
+	highmem = inb(0x71);
+
+	total = lowmem | highmem << 8;
+	
+	return total;
+	
+}
+    
 
 EFI_STATUS
 efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
@@ -107,13 +125,15 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	putString(gop->Mode->FrameBufferBase, 10, 150, 0x00ffffff, "ABCDEFGHIJKLMNOPQRSTUVWXYZ\0");
 	putString(gop->Mode->FrameBufferBase, 10, 166, 0x00ffffff, "abcdefghijklmnopqrstuvwxyz\0");
 	putString(gop->Mode->FrameBufferBase, 10, 182, 0x00ffffff, "0123456789 .,;:'@!#\0");
-	putString(gop->Mode->FrameBufferBase, 10, 198, 0x00ffffff, "Servez a ce monsieur, le vieux petit juge blond assis au fond, une biere et un kiwi parce qu'il le souhaite.\0");
+	putString(gop->Mode->FrameBufferBase, 10, 198, 0x00ffffff, "Servez a ce monsieur, \nle vieux petit juge blond assis au fond, une biere et un kiwi parce qu'il le souhaite.\0");
+	
+	unsigned short s = getCmosMemSize();
 	
 	// Read keyboard raw input
 	int kposition=10;
 	while(1) {
 
-		putChar(gop->Mode->FrameBufferBase, kposition, 214, 0x00ff0000, getChar());
+		putChar(gop->Mode->FrameBufferBase, kposition, 230, 0x00ff0000, getChar());
 		kposition+=8;
 	
 	}
