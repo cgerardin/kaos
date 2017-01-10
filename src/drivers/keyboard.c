@@ -1,10 +1,10 @@
 /*
  * PS/2 keyboard driver
- * Missing : scancode table.
  */
  
- #include "keyboard.h"
- #include "io.h"
+#include "keyboard.h"
+#include "io.h"
+#include "../keymaps/ascii.h"
  
 char getScancode() {
 
@@ -27,7 +27,8 @@ char getScancode() {
 
 char getChar() {
 
-	//return scancode[getScancode()+1];
-	return getScancode();
+	extern char scancode[128];
+
+	return scancode[(int)getScancode()];
 
 }
