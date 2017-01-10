@@ -3,7 +3,6 @@
 #include <efiprot.h>
 #include "main.h"
 #include "logo.h"
-#include "io.h"
 #include "drivers/display.h"
 #include "drivers/keyboard.h"
 
@@ -19,7 +18,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
 	
 	Print(LOGO);
-	Print(L"\nWelcome to KaOS v0.0.1, the Karrot OS !\n\n");
+	Print(L"\nWelcome to KaOS v%d.%d.%d bootloader !\n\n", KAOS_VERSION_MAJOR, KAOS_VERSION_MINOR, KAOS_VERSION_REVISION);
 	Print(L"Press any key to boot, [H] to halt the system, [R] to reboot...\n");
 	
 	EFI_INPUT_KEY Key;
@@ -97,7 +96,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	}
 
 	// ...the OS name and version...
-	putString(gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, "KaOS v0.2\0");
+	putString(gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, "KaOS v0.1.1, the Karrot OS !\0");
 
 	// ...a line...
 	for(k=0; k<KAOS_SCREEN_WIDTH-20; k++) {
@@ -112,7 +111,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	
 	// Read keyboard raw input
 	int kposition=10;
-	while(1){
+	while(1) {
 
 		putChar(gop->Mode->FrameBufferBase, kposition, 214, 0x00ff0000, getChar());
 		kposition+=8;
