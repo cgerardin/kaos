@@ -106,8 +106,8 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	// ...and the some font's samples.
 	putString(gop->Mode->FrameBufferBase, 10, 150, 0x00ffffff, "ABCDEFGHIJKLMNOPQRSTUVWXYZ\0");
 	putString(gop->Mode->FrameBufferBase, 10, 166, 0x00ffffff, "abcdefghijklmnopqrstuvwxyz\0");
-	putString(gop->Mode->FrameBufferBase, 10, 182, 0x00ffffff, "0123456789 .,;:@#\0");
-	putString(gop->Mode->FrameBufferBase, 10, 198, 0x00ffffff, "Servez a ce monsieur une biere et un kiwi.\0");
+	putString(gop->Mode->FrameBufferBase, 10, 182, 0x00ffffff, "0123456789 .,;:'@!#\0");
+	putString(gop->Mode->FrameBufferBase, 10, 198, 0x00ffffff, "Servez a ce monsieur, le vieux petit juge blond assis au fond, une biere et un kiwi parce qu'il le souhaite.\0");
 	
 	// Read keyboard raw input
 	int kposition=10;
