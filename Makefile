@@ -7,7 +7,7 @@ EFIINC			= /usr/include/efi
 EFIINCS			= -I$(EFIINC) -I$(EFIINC)/$(ARCH) -I$(EFIINC)/protocol
 EFI_CRT_OBJS	= /usr/lib/crt0-efi-$(ARCH).o
 EFI_LDS			= /usr/lib/elf_$(ARCH)_efi.lds
-CFLAGS			= $(EFIINCS) -xc -std=c11 -fno-stack-protector -fpic -fshort-wchar -mno-red-zone -Wall -Wno-incompatible-library-redeclaration -O2
+CFLAGS			= $(EFIINCS) -xc -fno-stack-protector -fpic -fshort-wchar -mno-red-zone -Wall -Wno-incompatible-library-redeclaration -O2
 ifeq ($(ARCH),x86_64)
 	CFLAGS		+= -DHAVE_USE_MS_ABI
 endif
