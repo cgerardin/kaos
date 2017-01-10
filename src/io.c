@@ -1,3 +1,8 @@
+/*
+ * Low-level I/O functions
+ */
+
+#include <efi.h>
 #include "io.h"
 
 uint8_t inb(uint16_t port) {

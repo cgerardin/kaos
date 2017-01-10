@@ -4,7 +4,7 @@
  */
  
  #include "keyboard.h"
- #include "io.h"
+ #include "../io.h"
  
 char getScancode() {
 

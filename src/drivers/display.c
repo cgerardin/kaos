@@ -1,7 +1,10 @@
-#include <efi.h>
-#include "gop.h"
+/*
+ * GOP display driver
+ */
 
-#include "font-8x16.h"
+#include <efi.h>
+#include "display.h"
+#include "../fonts/system-8x16.h"
 
 void putPixel(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t color) {
 
@@ -14,7 +17,7 @@ void putPixel(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_
 
 void putChar(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t color, char charcode) {
 
-	extern unsigned char vga_font[VGA_FONT_SIZE];
+	extern unsigned char vga_font[GOP_FONT_SIZE];
 	
 	int p=charcode*128-128;
 	for(int l=0; l<16; l++) {

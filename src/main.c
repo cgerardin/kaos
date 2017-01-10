@@ -3,8 +3,8 @@
 #include <efiprot.h>
 #include "main.h"
 #include "logo.h"
-#include "drivers/io.h"
-#include "drivers/gop.h"
+#include "io.h"
+#include "drivers/display.h"
 #include "drivers/keyboard.h"
 
 EFI_STATUS
@@ -18,7 +18,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     
     uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
 	
-	//Print(LOGO);
+	Print(LOGO);
 	Print(L"\nWelcome to KaOS v0.0.1, the Karrot OS !\n\n");
 	Print(L"Press any key to boot, [H] to halt the system, [R] to reboot...\n");
 	

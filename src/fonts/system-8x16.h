@@ -1,6 +1,6 @@
-#define VGA_FONT_SIZE 127*128
+#define GOP_FONT_SIZE 8*16*127
 
-unsigned char vga_font[VGA_FONT_SIZE] = {
+unsigned char gop_font[GOP_FONT_SIZE] = {
 
 // Start of Heading
 0,0,0,0,0,0,0,0,

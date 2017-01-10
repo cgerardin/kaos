@@ -1,3 +1,7 @@
+/*
+ * Low-level I/O functions
+ */
+
 #ifndef H_IO
 #define H_IO
 
