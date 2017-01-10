@@ -10,21 +10,21 @@ void putPixel(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_
 
     uint32_t* pixel = (uint32_t*)fb_base_addr;
 
-    pixel += (x+y*DESIRED_HREZ);
+    pixel += (x+y*KAOS_SCREEN_WIDTH);
     *pixel++ = color;
 
 }
 
 void putChar(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t color, char charcode) {
 
-	extern unsigned char vga_font[GOP_FONT_SIZE];
+	extern unsigned char font_system_8x16[KAOS_FONTS_SIZE];
 	
 	int p=charcode*128-128;
 	for(int l=0; l<16; l++) {
 	
 		for(int c=0; c<8; c++) {
 		
-			if(vga_font[p]==1) {
+			if(font_system_8x16[p]==1) {
 				putPixel(fb_base_addr, x+c, y+l, color);
 			}
 		

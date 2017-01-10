@@ -1,6 +1,4 @@
-#define GOP_FONT_SIZE 8*16*127
-
-unsigned char gop_font[GOP_FONT_SIZE] = {
+unsigned char font_system_8x16[KAOS_FONTS_SIZE] = {
 
 // Start of Heading
 0,0,0,0,0,0,0,0,
@@ -2289,4 +2287,3 @@ unsigned char gop_font[GOP_FONT_SIZE] = {
 0,0,0,0,0,0,0,0
 
 };
-

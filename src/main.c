@@ -22,7 +22,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	Print(L"\nWelcome to KaOS v0.0.1, the Karrot OS !\n\n");
 	Print(L"Press any key to boot, [H] to halt the system, [R] to reboot...\n");
 	
-	/*EFI_INPUT_KEY Key;
+	EFI_INPUT_KEY Key;
 	while ((SystemTable->ConIn->ReadKeyStroke(SystemTable->ConIn, &Key)) == EFI_NOT_READY);
 
 	if(Key.UnicodeChar == 'h') {
@@ -36,7 +36,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		Print(L"Rebooting the system...\n");
 		return EFI_SUCCESS;
 	
-	}*/
+	}
 	
 	// Initialize framebuffer (GOP)
 	
@@ -50,9 +50,9 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     //UINTN size_of_info;
     /*UINTN mode_num;
     for (mode_num = 0; gop->QueryMode(gop, mode_num, &size_of_info, &gop_mode_info); mode_num++) {
-        if (gop_mode_info->HorizontalResolution == DESIRED_HREZ &&
-              gop_mode_info->VerticalResolution == DESIRED_VREZ &&
-              gop_mode_info->PixelFormat        == DESIRED_PIXEL_FORMAT)
+        if (gop_mode_info->HorizontalResolution == KAOS_SCREEN_WIDTH &&
+              gop_mode_info->VerticalResolution == KAOS_SCREEN_HEIGHT &&
+              gop_mode_info->PixelFormat        == KAOS_SCREEN_PIXEL_FORMAT)
             break;
     }*/
     gop->SetMode(gop, 1); // 800x600
@@ -80,7 +80,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	 
 	int k,l;
 	// Blank screen
-	for(k=0; k<DESIRED_HREZ*DESIRED_VREZ; k++) { putPixel(gop->Mode->FrameBufferBase, k, 0, 0x00000000); }
+	for(k=0; k<KAOS_SCREEN_WIDTH*KAOS_SCREEN_HEIGHT; k++) { putPixel(gop->Mode->FrameBufferBase, k, 0, 0x00000000); }
 	
 	// Draw a 50x20 green box...
 	for(l=0; l<20; l++) {
@@ -100,7 +100,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	putString(gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, "KaOS v0.2\0");
 
 	// ...a line...
-	for(k=0; k<DESIRED_HREZ-20; k++) {
+	for(k=0; k<KAOS_SCREEN_WIDTH-20; k++) {
 		putPixel(gop->Mode->FrameBufferBase, 10+k, 120, 0x00ff8000);
 	}
 
