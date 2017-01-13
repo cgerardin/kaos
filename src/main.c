@@ -3,6 +3,8 @@
 #include <efiprot.h>
 #include "main.h"
 #include "logo.h"
+#include "memory.h"
+#include "lib/string.h"
 #include "drivers/io.h"
 #include "drivers/display.h"
 #include "drivers/keyboard.h"
@@ -110,6 +112,15 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	putString(gop->Mode->FrameBufferBase, 10, 182, 0x00ffffff, "0123456789 .,;:'@!#\0");
 	putString(gop->Mode->FrameBufferBase, 10, 198, 0x00ffffff, "Servez à ce monsieur, \nle vieux petit juge blond assis au fond, une biere et un kiwi parce qu'il le souhaite.\0");
 	
+	// Displaying memory size
+	// At this point, we need a strcat() function to concat strings.
+	// So we need a malloc() function. So we need a real memory manager !
+	unsigned short s = getCmosMemSize()/512+1;
+    char *buffer = "XXXXXXXX";
+	putString(gop->Mode->FrameBufferBase, 10, 230, 0x0000ff00, "Memory size : ");
+	putString(gop->Mode->FrameBufferBase, 122, 230, 0x0000ff00, itoa(s,buffer,10));
+	putString(gop->Mode->FrameBufferBase, 154, 230, 0x0000ff00, "Mb");
+
 	// Read keyboard raw input
 	int kposition=10;
 	while(1) {
