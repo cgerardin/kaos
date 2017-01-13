@@ -49,11 +49,14 @@ $(EXEC).efi: $(EXEC).so
 	@mkdir -p dist
 	@objcopy -j .text -j .sdata -j .data -j .dynamic -j .dynsym  -j .rel -j .rela -j .reloc --target=efi-app-$(ARCH) src/$< dist/$@
 
-$(EXEC).so: main.o drivers/io.o drivers/display.o drivers/keyboard.o
+$(EXEC).so: main.o memory.o drivers/io.o drivers/display.o drivers/keyboard.o
 	@ld.gold $(LDFLAGS) src/$< src/drivers/*.o -o src/$@ -lefi -lgnuefi
 
 main.o:
 	@$(CC) $(CFLAGS) -o src/$@ -c src/main.c
+	
+memory.o:
+	@$(CC) $(CFLAGS) -o src/$@ -c src/memory.c
 
 drivers/io.o:
 	@$(CC) $(CFLAGS) -o src/$@ -c src/drivers/io.c
