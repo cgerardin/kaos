@@ -47,25 +47,20 @@ char *itoa(int value, char *string, int base) {
 	
 }
 
-char *strcat(char *string1, char *string2) {
-
-	char *result = "                                                                                          ";
+char *strcat(char *string1, const char *string2) {
 	
 	int p1=0, p2=0;
 	while(string1[p1]!='\0') {
-		result[p1]=string1[p1];
 		p1++;
 	}
-	p1++;
 	while(string2[p2]!='\0') {
-		result[p1+p2]=string2[p2];
+		string1[p1]=string2[p2];
+		p1++;
 		p2++;
 	}
-	p2++;
-	
-	result[p1+p2]='\0';
+	string1[p1]='\0';
 
-	return result;
+	return string1;
 
 }
 
