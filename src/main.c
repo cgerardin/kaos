@@ -15,10 +15,10 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	/*
 	 * UEFI boot loader
 	 */
-    
-    InitializeLib(ImageHandle, SystemTable);
-    
-    uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
+
+	InitializeLib(ImageHandle, SystemTable);
+
+	uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
 	
 	Print(LOGO);
 	Print(L"\nWelcome to KaOS v%d.%d.%d bootloader !\n\n", KAOS_VERSION_MAJOR, KAOS_VERSION_MINOR, KAOS_VERSION_REVISION);
@@ -116,16 +116,20 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	// At this point, we need a strcat() function to concat strings.
 	// So we need a malloc() function. So we need a real memory manager !
 	unsigned short s = getCmosMemSize()/512+1;
-    char *buffer = "XXXXXXXX";
+	char *buffer = "XXXXXXXX";
 	putString(gop->Mode->FrameBufferBase, 10, 230, 0x0000ff00, "Memory size : ");
 	putString(gop->Mode->FrameBufferBase, 122, 230, 0x0000ff00, itoa(s,buffer,10));
 	putString(gop->Mode->FrameBufferBase, 154, 230, 0x0000ff00, "Mb");
+	
+	// strcat()'s test
+	putString(gop->Mode->FrameBufferBase, 10, 246, 0x00ffff00, strcat("aaa", "bbb"));
+	
 
 	// Read keyboard raw input
 	int kposition=10;
 	while(1) {
 
-		putChar(gop->Mode->FrameBufferBase, kposition, 246, 0x00ff0000, getChar());
+		putChar(gop->Mode->FrameBufferBase, kposition, 262, 0x00ff0000, getChar());
 		kposition+=8;
 	
 	}
