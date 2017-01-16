@@ -2,13 +2,14 @@
  * Standard library functions - Strings
  */
 
+#include <wchar.h>
 #include "string.h"
 
-char *itoa(int value, char *string, int base) {
+wchar_t *itoa(int value, wchar_t *string, int base) {
 
-	char *rc;
-	char *ptr;
-	char *low;
+	wchar_t *rc;
+	wchar_t *ptr;
+	wchar_t *low;
 	
 	// Check for supported base.
 	if (base < 2 || base > 36) {
@@ -38,7 +39,7 @@ char *itoa(int value, char *string, int base) {
 	
 	// Invert the numbers.
 	while (low < ptr) {
-		char tmp = *low;
+		wchar_t tmp = *low;
 		*low++ = *ptr;
 		*ptr-- = tmp;
 	}
@@ -47,7 +48,7 @@ char *itoa(int value, char *string, int base) {
 	
 }
 
-char *strcat(char *string1, const char *string2) {
+wchar_t *strcat(wchar_t *string1, const wchar_t *string2) {
 	
 	int p1=0, p2=0;
 	while(string1[p1]!='\0') {

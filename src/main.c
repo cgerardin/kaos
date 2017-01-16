@@ -1,6 +1,7 @@
 #include <efi.h>
 #include <efilib.h>
 #include <efiprot.h>
+#include <wchar.h>
 #include "main.h"
 #include "logo.h"
 #include "memory.h"
@@ -99,7 +100,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	}
 
 	// ...the OS name and version...
-	putString(gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, "KaOS v0.1.1, the Karrot OS !\0");
+	putString(gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, L"KaOS v0.1.1, the Karrot OS !\0");
 
 	// ...a line...
 	for(k=0; k<KAOS_SCREEN_WIDTH-20; k++) {
@@ -107,9 +108,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	}
 
 	// ...and the some font's samples.
-	putString(gop->Mode->FrameBufferBase, 10, 198, 0x00ffffff, "Servez à ce monsieur, \nle vieux petit juge blond assis au fond, une biere et un kiwi parce qu'il le souhaite.\0");
-	
-	char *b = "ZZZZZZ";
+	putString(gop->Mode->FrameBufferBase, 10, 198, 0x00ffffff, L"Servez à ce monsieur, \nle vieux petit juge blond assis au fond, une biere et un kiwi parce qu'il le souhaite. éèêçà\0");
 	
 	// Displaying memory size
 	// At this point, we need a malloc() function. So we need a real memory manager !
@@ -119,7 +118,8 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	// Read keyboard raw input
 	int kposition=10;
 	int s=0x0;
-	char c=0;
+	wchar_t c=0;
+	wchar_t *b = L"ZZZZZZ";
 	
 	while(1) {
 

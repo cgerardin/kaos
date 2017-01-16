@@ -3,6 +3,7 @@
  */
 
 #include <efi.h>
+#include <wchar.h>
 #include "display.h"
 #include "../fonts/system-8x16.h"
 
@@ -15,9 +16,9 @@ void putPixel(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_
 
 }
 
-void putChar(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t color, char charcode) {
+void putChar(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t color, wchar_t charcode) {
 
-	extern char font_system_8x16[KAOS_FONTS_SIZE];
+	extern wchar_t font_system_8x16[KAOS_FONTS_SIZE];
 	
 	int p=charcode*128-128;
 	for(int l=0; l<16; l++) {
@@ -36,7 +37,7 @@ void putChar(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t
 
 }
 
-void putString(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t color, char *string) {
+void putString(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t color, wchar_t *string) {
 
 	uint32_t oldx=x;
 	

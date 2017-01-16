@@ -5,7 +5,9 @@
 #ifndef H_STRING
 #define H_STRING
 
-char *itoa(int value, char *string, int base);
-char *strcat(char *string1, const char *string2);
+#include <wchar.h>
+
+wchar_t *itoa(int value, wchar_t *string, int base);
+wchar_t *strcat(wchar_t *string1, const wchar_t *string2);
 
 #endif /* H_STRING */
