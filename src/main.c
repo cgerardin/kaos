@@ -119,10 +119,31 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
 	// Read keyboard raw input
 	int kposition=10;
+	char c;
 	while(1) {
 
-		putChar(gop->Mode->FrameBufferBase, kposition, 262, 0x00ff0000, getChar());
-		kposition+=8;
+		c=getChar();
+		switch(c) {
+		
+			case '\n':
+				kposition=10;
+				break;
+			
+			case '\b':
+				kposition-=8;
+				for(l=0; l<16; l++) {
+					for(k=0; k<8; k++) {
+						putPixel(gop->Mode->FrameBufferBase, kposition+k, 262+l, 0x00000000);
+					}
+				}
+				break;
+			
+			default:
+				putChar(gop->Mode->FrameBufferBase, kposition, 262, 0x00ffffff, c);
+				kposition+=8;
+
+		}
+		
 	
 	}
 
