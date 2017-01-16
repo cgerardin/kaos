@@ -107,22 +107,34 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	}
 
 	// ...and the some font's samples.
-	putString(gop->Mode->FrameBufferBase, 10, 150, 0x00ffffff, "ABCDEFGHIJKLMNOPQRSTUVWXYZ\0");
-	putString(gop->Mode->FrameBufferBase, 10, 166, 0x00ffffff, "abcdefghijklmnopqrstuvwxyz\0");
-	putString(gop->Mode->FrameBufferBase, 10, 182, 0x00ffffff, "0123456789 .,;:'@!#\0");
 	putString(gop->Mode->FrameBufferBase, 10, 198, 0x00ffffff, "Servez à ce monsieur, \nle vieux petit juge blond assis au fond, une biere et un kiwi parce qu'il le souhaite.\0");
+	
+	char *b = "ZZZZZZ";
 	
 	// Displaying memory size
 	// At this point, we need a malloc() function. So we need a real memory manager !
-	//unsigned short s = getCmosMemSize()/512+1;
-	putString(gop->Mode->FrameBufferBase, 10, 230, 0x0000ff00, strcat("Memory size : ", "Mb")); // Ugly
+	//unsigned short memorySize = getCmosMemSize()/512+1;
+	// @fixme
 
 	// Read keyboard raw input
 	int kposition=10;
-	char c;
+	int s=0x0;
+	char c=0;
+	
 	while(1) {
 
-		c=getChar();
+		s = getScancode();
+		c=scancodeToChar(s);
+		
+		// Display charcode in the upper right corner
+		for(l=0; l<16; l++) {
+			for(k=0; k<36; k++) {
+				putPixel(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-104+k, 50+l, 0x0075507b);
+			}
+		}
+		putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 50, 0x00ffffff, itoa(s, b, 16));
+		
+		// Display the char
 		switch(c) {
 		
 			case '\n':
@@ -139,6 +151,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 				break;
 			
 			default:
+			
 				putChar(gop->Mode->FrameBufferBase, kposition, 262, 0x00ffffff, c);
 				kposition+=8;
 

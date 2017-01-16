@@ -27,8 +27,16 @@ char getScancode() {
 
 char getChar() {
 
-	extern char scancode[128];
+	extern char scancodes[128];
 
-	return scancode[(int)getScancode()];
+	return scancodes[(int)getScancode()];
+
+}
+
+char scancodeToChar(char scancode) {
+
+	extern char scancodes[128];
+
+	return scancodes[(int)scancode];
 
 }

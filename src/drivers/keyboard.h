@@ -3,5 +3,6 @@
 
 char getScancode();
 char getChar();
+char scancodeToChar(char scancode);
 
 #endif /* H_KEYBOARD */
