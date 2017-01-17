@@ -107,11 +107,10 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		putPixel(gop->Mode->FrameBufferBase, 10+k, 120, 0x00ff8000);
 	}
 
-	// ...and the some font's samples.
-	putString(gop->Mode->FrameBufferBase, 10, 198, 0x00ffffff, L"Servez à ce monsieur, \nle vieux petit juge blond assis au fond, une biere et un kiwi parce qu'il le souhaite. éèêçà\0");
-	
-	// Displaying memory size
 	// At this point, we need a malloc() function. So we need a real memory manager !
+	wchar_t *strbuffer = L"\0ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"; // Temporary workaround
+
+	// Displaying memory size
 	//unsigned short memorySize = getCmosMemSize()/512+1;
 	// @fixme
 
@@ -119,7 +118,6 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	int kposition=10;
 	char key;
 	wchar_t c=0;
-	wchar_t *b = L"ZZZZZZ";
 
 	while(1) {
 
@@ -132,7 +130,8 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 				putPixel(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-104+k, 50+l, 0x0075507b);
 			}
 		}
-		putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 50, 0x00ffffff, itoa(key, b, 16));
+
+		putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 50, 0x00ffffff, itoa(key, strbuffer, 16));
 		
 		// Display the char
 		switch(c) {
