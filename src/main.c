@@ -110,9 +110,23 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	// At this point, we need a malloc() function. So we need a real memory manager !
 	wchar_t *strbuffer = L"\0ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"; // Temporary workaround
 
-	// Displaying memory size
-	//unsigned short memorySize = getCmosMemSize()/512+1;
-	// @fixme
+	// Displaying memory size, kernel last address, first free address
+	// and total free memory, in the upper right corner
+	extern int end;
+	int memorySize=getCmosMemSize(); // (Mo : n/512+1)
+	int lastKernelAddress=end;
+	int firstFreeAddress=end+1;
+	int freeMemorySize=0;
+
+	for(l=0; l<64; l++) {
+		for(k=0; k<72; k++) {
+			putPixel(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-104+k, 10+l, 0x004e9a06);
+		}
+	}
+	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 10, 0x00ffffff, itoa(memorySize/1000, strbuffer, 10));
+	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 26, 0x00ffffff, itoa(lastKernelAddress, strbuffer, 16));
+	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 42, 0x00ffffff, itoa(firstFreeAddress, strbuffer, 16));
+	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 58, 0x00ffffff, itoa(freeMemorySize, strbuffer, 16));
 
 	// Read keyboard raw input
 	int kposition=10;
@@ -124,14 +138,13 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		key = getScancode();
 		c=scancodeToChar(key);
 
-		// Display charcode in the upper right corner
+		// Display charcode in the lower right corner
 		for(l=0; l<16; l++) {
 			for(k=0; k<36; k++) {
-				putPixel(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-104+k, 50+l, 0x0075507b);
+				putPixel(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-54+k, KAOS_SCREEN_HEIGHT-150+l, 0x0075507b);
 			}
 		}
-
-		putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 50, 0x00ffffff, itoa(key, strbuffer, 16));
+		putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-50, KAOS_SCREEN_HEIGHT-150, 0x00ffffff, itoa(key, strbuffer, 16));
 		
 		// Display the char
 		switch(c) {
