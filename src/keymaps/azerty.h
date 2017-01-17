@@ -1,5 +1,5 @@
-#ifndef H_ASCII
-#define H_ASCII
+#ifndef H_KEYMAPS_AZERTY
+#define H_KEYMAPS_AZERTY
 
 char scancodes[128] =
 {
@@ -41,4 +41,4 @@ char scancodes[128] =
     0,	/* All other keys are undefined */
 };
 
-#endif /* H_ASCII */
+#endif /* H_KEYMAPS_AZERTY */

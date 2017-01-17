@@ -117,30 +117,30 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
 	// Read keyboard raw input
 	int kposition=10;
-	int s=0x0;
+	char key;
 	wchar_t c=0;
 	wchar_t *b = L"ZZZZZZ";
-	
+
 	while(1) {
 
-		s = getScancode();
-		c=scancodeToChar(s);
-		
+		key = getScancode();
+		c=scancodeToChar(key);
+
 		// Display charcode in the upper right corner
 		for(l=0; l<16; l++) {
 			for(k=0; k<36; k++) {
 				putPixel(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-104+k, 50+l, 0x0075507b);
 			}
 		}
-		putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 50, 0x00ffffff, itoa(s, b, 16));
+		putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 50, 0x00ffffff, itoa(key, b, 16));
 		
 		// Display the char
 		switch(c) {
-		
+
 			case '\n':
 				kposition=10;
 				break;
-			
+
 			case '\b':
 				kposition-=8;
 				for(l=0; l<16; l++) {
@@ -149,14 +149,13 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 					}
 				}
 				break;
-			
+
 			default:
-			
+
 				putChar(gop->Mode->FrameBufferBase, kposition, 262, 0x00ffffff, c);
 				kposition+=8;
 
 		}
-		
 	
 	}
 

@@ -2,6 +2,9 @@
  * System font | Unicode Latin-1
  */
 
+#ifndef H_FONTS_SYSTEM8X16
+#define H_FONTS_SYSTEM8X16
+
 wchar_t font_system_8x16[KAOS_FONTS_SIZE] = {
 
 // Start of Heading (1)
@@ -4594,3 +4597,5 @@ wchar_t font_system_8x16[KAOS_FONTS_SIZE] = {
 0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0
 };
+
+#endif /* H_FONTS_SYSTEM8X16 */

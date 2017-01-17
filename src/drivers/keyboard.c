@@ -4,7 +4,24 @@
  
 #include "keyboard.h"
 #include "io.h"
-#include "../keymaps/ascii.h"
+#include "../keymaps/azerty.h"
+
+char scanScancode() {
+
+	char c=0;
+	if(inb(0x60)!=c) {
+	
+		c=inb(0x60);
+		if(c>0) {
+			outb(0x60, 0);  // Empty buffer
+		}
+	
+	}
+	
+	
+	return c;
+}
+
  
 char getScancode() {
 
