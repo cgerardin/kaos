@@ -2,6 +2,7 @@
  * PS/2 keyboard driver
  */
  
+#include <wchar.h>
 #include "keyboard.h"
 #include "io.h"
 #include "../keymaps/azerty.h"
@@ -13,7 +14,7 @@ char scanScancode() {
 	
 		c=inb(0x60);
 		if(c>0) {
-			outb(0x60, 0);  // Empty buffer
+			outb(0x60, 0); // Empty buffer
 		}
 	
 	}
@@ -42,17 +43,17 @@ char getScancode() {
 	
 }
 
-char getChar() {
+wchar_t getChar() {
 
-	extern char scancodes[128];
+	extern wchar_t scancodes[128];
 
 	return scancodes[(int)getScancode()];
 
 }
 
-char scancodeToChar(char scancode) {
+wchar_t scancodeToChar(char scancode) {
 
-	extern char scancodes[128];
+	extern wchar_t scancodes[128];
 
 	return scancodes[(int)scancode];
 

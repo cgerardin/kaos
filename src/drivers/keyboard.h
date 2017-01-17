@@ -7,7 +7,7 @@
 
 char scanScancode();
 char getScancode();
-char getChar();
-char scancodeToChar(char scancode);
+wchar_t getChar();
+wchar_t scancodeToChar(char scancode);
 
 #endif /* H_DRIVERS_KEYBOARD */

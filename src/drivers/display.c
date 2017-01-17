@@ -20,7 +20,7 @@ void putChar(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t
 
 	extern wchar_t font_system_8x16[KAOS_FONTS_SIZE];
 	
-	int p=charcode*128-128;
+	wchar_t p=charcode*128-128; // Size of a font's character
 	for(int l=0; l<16; l++) {
 	
 		for(int c=0; c<8; c++) {
