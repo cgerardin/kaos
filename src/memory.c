@@ -5,6 +5,14 @@
  #include "memory.h"
  #include "drivers/io.h"
  
+ /*
+  
+  OKAY. THis code is totally obsolete and BIOS-oriented, nor UEFI.
+  
+  Check this ! https://github.com/ld86/os/blob/master/efi/src/main.c
+ 
+ */
+ 
 unsigned short getCmosMemSize() {
 
 	unsigned short total;
