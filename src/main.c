@@ -129,7 +129,9 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 58, 0x00ffffff, itoa(freeMemorySize, strbuffer, 16));
 
 	// Read keyboard raw input
-	int kposition=10;
+	int linePos=136;
+	int cursorPos=8;
+	int maxcharInLine=(KAOS_SCREEN_WIDTH/16)*16;
 	char key;
 	wchar_t c=0;
 
@@ -146,26 +148,38 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		}
 		putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-50, KAOS_SCREEN_HEIGHT-150, 0x00ffffff, itoa(key, strbuffer, 16));
 		
-		// Display the char
+		// We need a solid double-buffering solution here
+		// and simply redraw the entire screen buffer @fixme)
+		
+		// Draw char
 		switch(c) {
 
 			case '\n':
-				kposition=10;
+				cursorPos=8;
+				linePos+=16;
 				break;
 
 			case '\b':
-				kposition-=8;
+				cursorPos-=8;
+				if(cursorPos<8) {
+					cursorPos=maxcharInLine-16;
+					linePos-=16;
+				}
 				for(l=0; l<16; l++) {
 					for(k=0; k<8; k++) {
-						putPixel(gop->Mode->FrameBufferBase, kposition+k, 262+l, 0x00000000);
+						putPixel(gop->Mode->FrameBufferBase, cursorPos+k, linePos+l, 0x00000000);
 					}
 				}
 				break;
 
 			default:
 
-				putChar(gop->Mode->FrameBufferBase, kposition, 262, 0x00ffffff, c);
-				kposition+=8;
+				putChar(gop->Mode->FrameBufferBase, cursorPos, linePos, 0x00ffffff, c);
+				cursorPos+=8;
+				if(cursorPos>=maxcharInLine-8) {
+					cursorPos=8;
+					linePos+=16;
+				}
 
 		}
 	
