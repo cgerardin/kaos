@@ -17,9 +17,51 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	 * UEFI boot loader
 	 */
 
+	EFI_STATUS status;
+
 	InitializeLib(ImageHandle, SystemTable);
 
-	uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
+
+	// Getting memory informations
+	EFI_MEMORY_DESCRIPTOR *descriptors;	
+	UINTN neededMemory = 0, actualSize, descriptors_size;
+	UINT64 totalMemory = 0;
+	extern int end;
+
+	status = uefi_call_wrapper(SystemTable->BootServices->GetMemoryMap, 5, &neededMemory, NULL, NULL, NULL, NULL);
+	
+	if (status != EFI_BUFFER_TOO_SMALL) {
+		Print(L"Something going wrong\n");
+		return EFI_SUCCESS;
+	}
+
+	status = uefi_call_wrapper(SystemTable->BootServices->AllocatePool, 3, EfiLoaderData, neededMemory, (void **)&descriptors);
+	if (status != EFI_SUCCESS) {
+		Print (L"AllocatePool failed\n");
+		return EFI_SUCCESS;
+	}
+
+	status = uefi_call_wrapper(SystemTable->BootServices->GetMemoryMap, 5, &descriptors_size, descriptors, NULL, &actualSize, NULL);
+	
+	if (status == EFI_SUCCESS) {
+
+		UINTN count = descriptors_size / actualSize;
+		UINTN i;
+		for (i = 0; i < count; ++i) {
+
+			if (descriptors[i].Type == EfiLoaderData || descriptors[i].Type == EfiBootServicesData || descriptors[i].Type == EfiRuntimeServicesData || descriptors[i].Type == EfiConventionalMemory) {
+				totalMemory += descriptors[i].NumberOfPages * 4096;
+			}
+
+		}
+
+		Print(L"%d\n", totalMemory);
+
+	}
+
+
+
+	//uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
 	
 	Print(LOGO);
 	Print(L"\nWelcome to KaOS v%d.%d.%d bootloader !\n\n", KAOS_VERSION_MAJOR, KAOS_VERSION_MINOR, KAOS_VERSION_REVISION);
@@ -112,7 +154,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
 	// Displaying memory size, kernel last address, first free address
 	// and total free memory, in the upper right corner
-	extern int end;
+	//extern int end;
 	int memorySize=getCmosMemSize(); // (Mo : n/512+1)
 	int lastKernelAddress=end;
 	int firstFreeAddress=end+1;
