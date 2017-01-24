@@ -10,62 +10,92 @@
 #include "drivers/display.h"
 #include "drivers/keyboard.h"
 
-EFI_STATUS
-efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
+EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
 	/*
 	 * UEFI boot loader
 	 */
 
-	EFI_STATUS status;
-
 	InitializeLib(ImageHandle, SystemTable);
-
+	EFI_STATUS status=EFI_SUCCESS;
 
 	// Getting memory informations
-	EFI_MEMORY_DESCRIPTOR *descriptors;	
-	UINTN neededMemory = 0, actualSize, descriptors_size;
-	UINT64 totalMemory = 0;
-	extern int end;
-
-	status = uefi_call_wrapper(SystemTable->BootServices->GetMemoryMap, 5, &neededMemory, NULL, NULL, NULL, NULL);
+	// http://stackoverflow.com/questions/17591351/converting-efi-memory-map-to-e820-map
 	
-	if (status != EFI_BUFFER_TOO_SMALL) {
-		Print(L"Something going wrong\n");
-		return EFI_SUCCESS;
-	}
+	uint64_t totalMemory=0;
+	uint64_t freeMemory=0;
+	uint64_t lastAddress=0;
 
-	status = uefi_call_wrapper(SystemTable->BootServices->AllocatePool, 3, EfiLoaderData, neededMemory, (void **)&descriptors);
-	if (status != EFI_SUCCESS) {
-		Print (L"AllocatePool failed\n");
-		return EFI_SUCCESS;
-	}
+    uint64_t MemMapSize=sizeof(EFI_MEMORY_DESCRIPTOR)*16;
+    uint64_t MemMapSizeOut=MemMapSize;
+    uint64_t MemMapKey=0;
+    uint64_t MemMapDescriptorSize=0;
+    uint32_t MemMapDescriptorVersion=0;
+    uint64_t DescriptorCount=0;
+    uint8_t *buffer=NULL;
+    EFI_MEMORY_DESCRIPTOR *MemoryDescriptorPtr=NULL;
 
-	status = uefi_call_wrapper(SystemTable->BootServices->GetMemoryMap, 5, &descriptors_size, descriptors, NULL, &actualSize, NULL);
-	
-	if (status == EFI_SUCCESS) {
+	// Discover memory map size
+    do {
 
-		UINTN count = descriptors_size / actualSize;
-		UINTN i;
-		for (i = 0; i < count; ++i) {
+        buffer = AllocatePool(MemMapSize);
+        if (buffer == NULL) {
+			break;
+        }
 
-			if (descriptors[i].Type == EfiLoaderData || descriptors[i].Type == EfiBootServicesData || descriptors[i].Type == EfiRuntimeServicesData || descriptors[i].Type == EfiConventionalMemory) {
-				totalMemory += descriptors[i].NumberOfPages * 4096;
+        status = SystemTable->BootServices->GetMemoryMap(&MemMapSizeOut, (EFI_MEMORY_DESCRIPTOR*)buffer,
+			&MemMapKey, &MemMapDescriptorSize, &MemMapDescriptorVersion);
+
+        if (status != EFI_SUCCESS) {
+            FreePool(buffer);
+            MemMapSize += sizeof(EFI_MEMORY_DESCRIPTOR)*16;
+        }
+
+    } while (status != EFI_SUCCESS);
+
+	// Discover memory map and calcul total/free memory
+    if (buffer != NULL) {
+
+        DescriptorCount = MemMapSizeOut / MemMapDescriptorSize;
+        MemoryDescriptorPtr = (EFI_MEMORY_DESCRIPTOR*)buffer;
+
+        for (int i=0; i<DescriptorCount; i++) {
+
+            MemoryDescriptorPtr = (EFI_MEMORY_DESCRIPTOR*)(buffer + (i*MemMapDescriptorSize));
+
+            if (MemoryDescriptorPtr->Type == EfiLoaderData
+		        || MemoryDescriptorPtr->Type == EfiBootServicesData
+		        || MemoryDescriptorPtr->Type == EfiRuntimeServicesData
+		        || MemoryDescriptorPtr->Type == EfiConventionalMemory) {
+
+				freeMemory += MemoryDescriptorPtr->NumberOfPages*EFI_PAGE_SIZE;
+				lastAddress = MemoryDescriptorPtr->PhysicalStart + MemoryDescriptorPtr->NumberOfPages * EFI_PAGE_SIZE;
+
 			}
 
-		}
+			totalMemory += MemoryDescriptorPtr->NumberOfPages*EFI_PAGE_SIZE;
 
-		Print(L"%d\n", totalMemory);
+        }
 
-	}
+        FreePool(buffer);
+
+    }
+    freeMemory=freeMemory/1024/1024;
+    totalMemory=totalMemory/1024/1024;
 
 
+    // Welcome message
 
-	//uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
-	
+	uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
 	Print(LOGO);
 	Print(L"\nWelcome to KaOS v%d.%d.%d bootloader !\n\n", KAOS_VERSION_MAJOR, KAOS_VERSION_MINOR, KAOS_VERSION_REVISION);
-	Print(L"Press any key to boot, [H] to halt the system, [R] to reboot...\n");
+	Print(L"TOTAL MEMORY : %ld MB\n", totalMemory);
+	Print(L"AVAILABLE MEMORY : %ld MB\n", freeMemory);
+	Print(L"LAST FREE ADDRESS : 0x%lx\n", lastAddress);
+	Print(L"\nPress any key to boot, [H] to halt the system, [R] to reboot...\n");
+
+
+    // Wait for a key
 	
 	EFI_INPUT_KEY Key;
 	while ((SystemTable->ConIn->ReadKeyStroke(SystemTable->ConIn, &Key)) == EFI_NOT_READY);
@@ -80,11 +110,12 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
 		Print(L"Rebooting the system...\n");
 		return EFI_SUCCESS;
-	
+
 	}
-	
+
+
 	// Initialize framebuffer (GOP)
-	
+
     EFI_GRAPHICS_OUTPUT_PROTOCOL *gop;
     EFI_GUID gop_guid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
 
@@ -101,23 +132,14 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
             break;
     }*/
     gop->SetMode(gop, 1); // 800x600
-	
+
+
 	// Exiting UEFI land
+
 	uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
-	Print(L"Booting the kernel...");
+	Print(L"Booting the kernel...\n");
+	uefi_call_wrapper(SystemTable->BootServices->ExitBootServices, 2, ImageHandle, MemMapKey);
 
-	unsigned long mapSize = 0;
-	unsigned long mapKey;
-	unsigned long descriptorSize;
-	EFI_MEMORY_DESCRIPTOR *memoryMap = NULL;
-	uint32_t descriptorVersion;
-
-	uefi_call_wrapper(SystemTable->BootServices->GetMemoryMap, 5, &mapSize, memoryMap, NULL, &descriptorSize, NULL);
-	mapSize += 2 * descriptorSize;
-
-	uefi_call_wrapper(SystemTable->BootServices->AllocatePool, 3, EfiLoaderData, mapSize, (void **)&memoryMap);
-	uefi_call_wrapper(SystemTable->BootServices->GetMemoryMap, 5, &mapSize, memoryMap, &mapKey, &descriptorSize, &descriptorVersion);
-	uefi_call_wrapper(SystemTable->BootServices->ExitBootServices, 2, ImageHandle, mapKey);
 
 	/*
 	 * Kernel main. In the futur, must be loaded from external file...
@@ -152,23 +174,13 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	// At this point, we need a malloc() function. So we need a real memory manager !
 	wchar_t *strbuffer = L"\0ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"; // Temporary workaround
 
-	// Displaying memory size, kernel last address, first free address
-	// and total free memory, in the upper right corner
-	//extern int end;
-	int memorySize=getCmosMemSize(); // (Mo : n/512+1)
-	int lastKernelAddress=end;
-	int firstFreeAddress=end+1;
-	int freeMemorySize=0;
-
 	for(l=0; l<64; l++) {
 		for(k=0; k<72; k++) {
 			putPixel(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-104+k, 10+l, 0x004e9a06);
 		}
 	}
-	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 10, 0x00ffffff, itoa(memorySize/1000, strbuffer, 10));
-	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 26, 0x00ffffff, itoa(lastKernelAddress, strbuffer, 16));
-	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 42, 0x00ffffff, itoa(firstFreeAddress, strbuffer, 16));
-	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 58, 0x00ffffff, itoa(freeMemorySize, strbuffer, 16));
+	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 26, 0x00ffffff, itoa(totalMemory, strbuffer, 10));
+		putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 42, 0x00ffffff, itoa(freeMemory, strbuffer, 10));
 
 	// Read keyboard raw input
 	int linePos=136;
