@@ -87,7 +87,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     // Welcome message
 
 	uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
-	Print(LOGO);
+	//Print(LOGO);
 	Print(L"\nWelcome to KaOS v%d.%d.%d bootloader !\n\n", KAOS_VERSION_MAJOR, KAOS_VERSION_MINOR, KAOS_VERSION_REVISION);
 	Print(L"TOTAL MEMORY : %ld MB\n", totalMemory);
 	Print(L"AVAILABLE MEMORY : %ld MB\n", freeMemory);
@@ -116,23 +116,28 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
 	// Initialize framebuffer (GOP)
 
-    EFI_GRAPHICS_OUTPUT_PROTOCOL *gop;
-    EFI_GUID gop_guid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
+    EFI_GRAPHICS_OUTPUT_PROTOCOL *Gop;
+    EFI_GUID GopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
 
-    uefi_call_wrapper(SystemTable->BootServices->LocateProtocol, 3, &gop_guid, NULL, (void **)&gop);
-    
-    // This code suck - Let's using hard-coded mode number at this time...
-    //EFI_GRAPHICS_OUTPUT_MODE_INFORMATION* gop_mode_info;
-    //UINTN size_of_info;
-    /*UINTN mode_num;
-    for (mode_num = 0; gop->QueryMode(gop, mode_num, &size_of_info, &gop_mode_info); mode_num++) {
-        if (gop_mode_info->HorizontalResolution == KAOS_SCREEN_WIDTH &&
-              gop_mode_info->VerticalResolution == KAOS_SCREEN_HEIGHT &&
-              gop_mode_info->PixelFormat        == KAOS_SCREEN_PIXEL_FORMAT)
-            break;
-    }*/
-    gop->SetMode(gop, 1); // 800x600
+    uefi_call_wrapper(SystemTable->BootServices->LocateProtocol, 3, &GopGuid, NULL, (void **)&Gop);
 
+    //Print(L"\tFrame Buffer Base: %08X\n", Gop->Mode->FrameBufferBase);
+    //Print(L"\tFrame Buffer Size: %08X\n", Gop->Mode->FrameBufferSize);
+	// Set desired resolution
+    for (UINT32 i = 0; i < Gop->Mode->MaxMode; i++) {
+
+        EFI_GRAPHICS_OUTPUT_MODE_INFORMATION    *info;
+        UINTN                                   infoSize;
+        Gop->QueryMode(Gop, i, &infoSize, &info);
+
+		if(info->HorizontalResolution>=KAOS_SCREEN_WIDTH && info->VerticalResolution>=KAOS_SCREEN_HEIGHT) {
+			Gop->SetMode(Gop, i);
+			break;
+		}
+
+		FreePool(info);
+
+    }
 
 	// Exiting UEFI land
 
@@ -147,28 +152,28 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	 
 	int k,l;
 	// Blank screen
-	for(k=0; k<KAOS_SCREEN_WIDTH*KAOS_SCREEN_HEIGHT; k++) { putPixel(gop->Mode->FrameBufferBase, k, 0, 0x00000000); }
+	for(k=0; k<KAOS_SCREEN_WIDTH*KAOS_SCREEN_HEIGHT; k++) { putPixel(Gop->Mode->FrameBufferBase, k, 0, 0x00000000); }
 	
 	// Draw a 50x20 green box...
 	for(l=0; l<20; l++) {
 		for(k=0; k<50; k++) {
-			putPixel(gop->Mode->FrameBufferBase, 10+k, 10+l, 0x00336600);
+			putPixel(Gop->Mode->FrameBufferBase, 10+k, 10+l, 0x00336600);
 		}
 	}
 	
 	// Draw a 50x80 orange box...
 	for(l=0; l<80; l++) {
 		for(k=0; k<50; k++) {
-			putPixel(gop->Mode->FrameBufferBase, 10+k, 30+l, 0x00ff8000);
+			putPixel(Gop->Mode->FrameBufferBase, 10+k, 30+l, 0x00ff8000);
 		}
 	}
 
 	// ...the OS name and version...
-	putString(gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, L"KaOS v0.1.1, the Karrot OS !\0");
+	putString(Gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, L"KaOS v0.1.1, the Karrot OS !\0");
 
 	// ...a line...
 	for(k=0; k<KAOS_SCREEN_WIDTH-20; k++) {
-		putPixel(gop->Mode->FrameBufferBase, 10+k, 120, 0x00ff8000);
+		putPixel(Gop->Mode->FrameBufferBase, 10+k, 120, 0x00ff8000);
 	}
 
 	// At this point, we need a malloc() function. So we need a real memory manager !
@@ -176,11 +181,11 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
 	for(l=0; l<64; l++) {
 		for(k=0; k<72; k++) {
-			putPixel(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-104+k, 10+l, 0x004e9a06);
+			putPixel(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-104+k, 10+l, 0x004e9a06);
 		}
 	}
-	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 26, 0x00ffffff, itoa(totalMemory, strbuffer, 10));
-	putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 42, 0x00ffffff, itoa(freeMemory, strbuffer, 10));
+	putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 26, 0x00ffffff, itoa(totalMemory, strbuffer, 10));
+	putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 42, 0x00ffffff, itoa(freeMemory, strbuffer, 10));
 
 	// Read keyboard raw input
 	int linePos=136;
@@ -197,10 +202,10 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		// Display charcode in the lower right corner
 		for(l=0; l<16; l++) {
 			for(k=0; k<36; k++) {
-				putPixel(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-54+k, KAOS_SCREEN_HEIGHT-150+l, 0x0075507b);
+				putPixel(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-54+k, KAOS_SCREEN_HEIGHT-150+l, 0x0075507b);
 			}
 		}
-		putString(gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-50, KAOS_SCREEN_HEIGHT-150, 0x00ffffff, itoa(key, strbuffer, 16));
+		putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-50, KAOS_SCREEN_HEIGHT-150, 0x00ffffff, itoa(key, strbuffer, 16));
 		
 		// We need a solid double-buffering solution here
 		// and simply redraw the entire screen buffer @fixme)
@@ -221,14 +226,14 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 				}
 				for(l=0; l<16; l++) {
 					for(k=0; k<8; k++) {
-						putPixel(gop->Mode->FrameBufferBase, cursorPos+k, linePos+l, 0x00000000);
+						putPixel(Gop->Mode->FrameBufferBase, cursorPos+k, linePos+l, 0x00000000);
 					}
 				}
 				break;
 
 			default:
 
-				putChar(gop->Mode->FrameBufferBase, cursorPos, linePos, 0x00ffffff, c);
+				putChar(Gop->Mode->FrameBufferBase, cursorPos, linePos, 0x00ffffff, c);
 				cursorPos+=8;
 				if(cursorPos>=maxcharInLine-8) {
 					cursorPos=8;
