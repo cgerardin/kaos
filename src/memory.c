@@ -17,3 +17,9 @@ int memcmp(const void *a, const void *b, size_t n) {
  
     return 0;
 }
+
+void* malloc_stub(size_t size, uint64_t baseAddress) {
+
+	return (void*) baseAddress;
+
+}
