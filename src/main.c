@@ -82,9 +82,6 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
         FreePool(buffer);
 
     }
-    freeMemory=freeMemory/1024/1024;
-    totalMemory=totalMemory/1024/1024;
-
 
 	// Initialize framebuffer (GOP)
 
@@ -117,6 +114,9 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	/*
 	 * Kernel main. In the futur, must be loaded from external file...
 	 */
+
+	// Initialize the quick'n'dirty memory manager
+	init_memory_manager(totalMemory, freeMemory, lastAddress);
 	 
 	int k,l;
 	// Blank screen
@@ -137,12 +137,12 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	}
 
 	// ...the OS name and version... 
-	wchar_t *osName = malloc_stub(200 * sizeof(wchar_t), lastAddress-8000);
-	wchar_t *osMajor = malloc_stub(3 * sizeof(wchar_t), lastAddress-7500);
-	wchar_t *osMinor = malloc_stub(3 * sizeof(wchar_t), lastAddress-7400);
-	wchar_t *osRevision = malloc_stub(3 * sizeof(wchar_t), lastAddress-7300);
-	strf(osName, 7, L"KaOS v", itoa(KAOS_VERSION_MAJOR, osMajor, 10), ".", 
-		itoa(KAOS_VERSION_MINOR, osMinor, 10), ".", 
+	wchar_t *osName = kmalloc(200 * sizeof(wchar_t));
+	wchar_t *osMajor = kmalloc(3 * sizeof(wchar_t));
+	wchar_t *osMinor = kmalloc(3 * sizeof(wchar_t));
+	wchar_t *osRevision = kmalloc(3 * sizeof(wchar_t));
+	strf(osName, 7, L"KaOS v", itoa(KAOS_VERSION_MAJOR, osMajor, 10), L".", 
+		itoa(KAOS_VERSION_MINOR, osMinor, 10), L".", 
 			itoa(KAOS_VERSION_REVISION, osRevision, 10), L", the Karrot OS !");
 	putString(Gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, osName);
 
@@ -151,18 +151,13 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		putPixel(Gop->Mode->FrameBufferBase, 10+k, 120, 0x00ff8000);
 	}
 
-	// At this point, we need a malloc() function. So we need a real memory manager !
-	wchar_t *strbuffer = malloc_stub(20 * sizeof(wchar_t), lastAddress-7000); // Temporary workaround
+	
 
-	for(l=0; l<64; l++) {
-		for(k=0; k<72; k++) {
-			putPixel(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-104+k, 10+l, 0x004e9a06);
-		}
-	}
-	putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 26, 0x00ffffff, itoa(totalMemory, strbuffer, 10));
-	putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 42, 0x00ffffff, itoa(freeMemory, strbuffer, 10));
-	putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 58, 0x00ffffff, itoa(firstAddress, strbuffer, 16));
-	putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 74, 0x00ffffff, itoa(lastAddress, strbuffer, 16));
+	wchar_t *strTotalMem = kmalloc(50 * sizeof(wchar_t));
+	wchar_t *strFreeMem = kmalloc(50 * sizeof(wchar_t));
+	wchar_t *memsize = kmalloc(20 * sizeof(wchar_t));
+
+	
 
 	// Read keyboard raw input
 	int linePos=136;
@@ -170,8 +165,24 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	int maxcharInLine=(KAOS_SCREEN_WIDTH/16)*16;
 	char key;
 	wchar_t c=0;
+	wchar_t *strKeycode = kmalloc(3 * sizeof(wchar_t));
 
 	while(1) {
+
+
+		for(l=0; l<64; l++) {
+			for(k=0; k<118; k++) {
+				putPixel(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-124+k, 10+l, 0x004e9a06);
+			}
+		}
+		strf(strTotalMem, 3, L"TOTAL : ", itoa(get_total_memory()/1024/1024, memsize, 10), L" Mo");
+		strf(strFreeMem, 3, L"FREE : ", itoa(get_free_memory()/1024/1024, memsize, 10), L" Mo");
+		putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-120, 26, 0x00ffffff, strTotalMem);
+		putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-120, 42, 0x00ffffff, strFreeMem);
+
+
+		kmalloc(200000);
+
 
 		key = getScancode();
 		c=scancodeToChar(key);
@@ -182,7 +193,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 				putPixel(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-54+k, KAOS_SCREEN_HEIGHT-150+l, 0x0075507b);
 			}
 		}
-		putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-50, KAOS_SCREEN_HEIGHT-150, 0x00ffffff, itoa(key, strbuffer, 16));
+		putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-50, KAOS_SCREEN_HEIGHT-150, 0x00ffffff, itoa(key, strKeycode, 16));
 		
 		// We need a solid double-buffering solution here
 		// and simply redraw the entire screen buffer @fixme)
