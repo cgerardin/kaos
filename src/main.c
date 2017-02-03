@@ -1,6 +1,7 @@
 #include <efi.h>
 #include <efilib.h>
 #include "main.h"
+#include "memory.h"
 #include "lib/types.h"
 #include "lib/string.h"
 #include "drivers/io.h"
@@ -23,6 +24,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	
 	uint64_t totalMemory=0;
 	uint64_t freeMemory=0;
+	uint64_t firstAddress=0;
 	uint64_t lastAddress=0;
 
     uint64_t MemMapSize=sizeof(EFI_MEMORY_DESCRIPTOR)*16;
@@ -68,6 +70,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		        || MemoryDescriptorPtr->Type == EfiConventionalMemory) {
 
 				freeMemory += MemoryDescriptorPtr->NumberOfPages*EFI_PAGE_SIZE;
+				if(firstAddress==0) firstAddress=MemoryDescriptorPtr->PhysicalStart;
 				lastAddress = MemoryDescriptorPtr->PhysicalStart + MemoryDescriptorPtr->NumberOfPages * EFI_PAGE_SIZE;
 
 			}
@@ -133,8 +136,17 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		}
 	}
 
-	// ...the OS name and version...
-	putString(Gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, L"KaOS v0.1.1, the Karrot OS !\0");
+	// ...the OS name and version... (we need a correct printf-like function...)
+	wchar_t *osName = malloc_stub(200 * sizeof(wchar_t), lastAddress-8000);
+	wchar_t *nbr = malloc_stub(3 * sizeof(wchar_t), lastAddress-7500);
+	strcpy(osName, L"KaOS v");
+	strcat(osName, itoa(KAOS_VERSION_MAJOR, nbr, 10));
+	strcat(osName, L".");
+	strcat(osName, itoa(KAOS_VERSION_MINOR, nbr, 10));
+	strcat(osName, L".");
+	strcat(osName, itoa(KAOS_VERSION_REVISION, nbr, 10));
+	strcat(osName, L", the Karrot OS !");
+	putString(Gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, osName);
 
 	// ...a line...
 	for(k=0; k<KAOS_SCREEN_WIDTH-20; k++) {
@@ -142,7 +154,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	}
 
 	// At this point, we need a malloc() function. So we need a real memory manager !
-	wchar_t *strbuffer = L"\0ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"; // Temporary workaround
+	wchar_t *strbuffer = malloc_stub(20 * sizeof(wchar_t), lastAddress-7000); // Temporary workaround
 
 	for(l=0; l<64; l++) {
 		for(k=0; k<72; k++) {
@@ -151,6 +163,8 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	}
 	putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 26, 0x00ffffff, itoa(totalMemory, strbuffer, 10));
 	putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 42, 0x00ffffff, itoa(freeMemory, strbuffer, 10));
+	putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 58, 0x00ffffff, itoa(firstAddress, strbuffer, 16));
+	putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-100, 74, 0x00ffffff, itoa(lastAddress, strbuffer, 16));
 
 	// Read keyboard raw input
 	int linePos=136;
