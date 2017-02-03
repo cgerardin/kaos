@@ -1,7 +1,7 @@
 #ifndef H_KEYMAPS_AZERTY
 #define H_KEYMAPS_AZERTY
 
-#include <wchar.h>
+#include "../lib/types.h"
 
 wchar_t scancodes[128] =
 {

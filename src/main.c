@@ -1,10 +1,7 @@
 #include <efi.h>
 #include <efilib.h>
-#include <efiprot.h>
-#include <wchar.h>
 #include "main.h"
-#include "logo.h"
-#include "memory.h"
+#include "lib/types.h"
 #include "lib/string.h"
 #include "drivers/io.h"
 #include "drivers/display.h"

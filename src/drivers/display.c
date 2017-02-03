@@ -2,12 +2,10 @@
  * GOP display driver
  */
 
-#include <efi.h>
-#include <wchar.h>
 #include "display.h"
 #include "../fonts/system-8x16.h"
 
-void putPixel(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t color) {
+void putPixel(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t color) {
 
     uint32_t* pixel = (uint32_t*)fb_base_addr;
 
@@ -16,7 +14,7 @@ void putPixel(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_
 
 }
 
-void putChar(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t color, wchar_t charcode) {
+void putChar(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t color, wchar_t charcode) {
 
 	extern wchar_t font_system_8x16[KAOS_FONTS_SIZE];
 	
@@ -37,7 +35,7 @@ void putChar(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t
 
 }
 
-void putString(EFI_PHYSICAL_ADDRESS fb_base_addr, uint32_t x, uint32_t y, uint32_t color, wchar_t *string) {
+void putString(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t color, wchar_t *string) {
 
 	uint32_t oldx=x;
 	

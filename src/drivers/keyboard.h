@@ -5,6 +5,8 @@
 #ifndef H_DRIVERS_KEYBOARD
 #define H_DRIVERS_KEYBOARD
 
+#include "../lib/types.h"
+
 char scanScancode();
 char getScancode();
 wchar_t getChar();

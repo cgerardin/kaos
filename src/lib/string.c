@@ -2,7 +2,6 @@
  * Standard library functions - Strings
  */
 
-#include <wchar.h>
 #include "string.h"
 
 wchar_t *itoa(int value, wchar_t *string, int base) {

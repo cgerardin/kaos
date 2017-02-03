@@ -2,7 +2,6 @@
  * PS/2 keyboard driver
  */
  
-#include <wchar.h>
 #include "keyboard.h"
 #include "io.h"
 #include "../keymaps/azerty.h"
