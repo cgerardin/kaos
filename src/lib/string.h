@@ -8,6 +8,7 @@
 #include "types.h"
 
 wchar_t *itoa(int value, wchar_t *string, int base);
-wchar_t *strcat(wchar_t *string1, const wchar_t *string2);
+wchar_t *strcpy(wchar_t *dest, const wchar_t *src);
+wchar_t *strcat(wchar_t *dest, const wchar_t *src);
 
 #endif /* H_LIB_STRING */

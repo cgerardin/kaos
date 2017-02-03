@@ -47,20 +47,33 @@ wchar_t *itoa(int value, wchar_t *string, int base) {
 	
 }
 
-wchar_t *strcat(wchar_t *string1, const wchar_t *string2) {
+wchar_t *strcpy(wchar_t *dest, const wchar_t *src) {
+
+	int p=0;
+	while(src[p]!='\0') {
+		dest[p]=src[p];
+		p++;
+	}
+	dest[p]='\0';
+
+	return dest;
+
+}
+
+wchar_t *strcat(wchar_t *dest, const wchar_t *src) {
 	
 	int p1=0, p2=0;
-	while(string1[p1]!='\0') {
+	while(dest[p1]!='\0') {
 		p1++;
 	}
-	while(string2[p2]!='\0') {
-		string1[p1]=string2[p2];
+	while(src[p2]!='\0') {
+		dest[p1]=src[p2];
 		p1++;
 		p2++;
 	}
-	string1[p1]='\0';
+	dest[p1]='\0';
 
-	return string1;
+	return dest;
 
 }
 
