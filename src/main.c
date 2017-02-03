@@ -19,6 +19,8 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	InitializeLib(ImageHandle, SystemTable);
 	EFI_STATUS status=EFI_SUCCESS;
 
+	uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
+
 	// Getting memory informations
 	// http://stackoverflow.com/questions/17591351/converting-efi-memory-map-to-e820-map
 	
@@ -84,36 +86,6 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     totalMemory=totalMemory/1024/1024;
 
 
-    // Welcome message
-
-	uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
-	//Print(LOGO);
-	Print(L"\nWelcome to KaOS v%d.%d.%d bootloader !\n\n", KAOS_VERSION_MAJOR, KAOS_VERSION_MINOR, KAOS_VERSION_REVISION);
-	Print(L"TOTAL MEMORY : %ld MB\n", totalMemory);
-	Print(L"AVAILABLE MEMORY : %ld MB\n", freeMemory);
-	Print(L"LAST FREE ADDRESS : 0x%lx\n", lastAddress);
-	Print(L"\nPress any key to boot, [H] to halt the system, [R] to reboot...\n");
-
-
-    // Wait for a key
-	
-	EFI_INPUT_KEY Key;
-	while ((SystemTable->ConIn->ReadKeyStroke(SystemTable->ConIn, &Key)) == EFI_NOT_READY);
-
-	if(Key.UnicodeChar == 'h') {
-
-		Print(L"System halted.");
-		for(;;) __asm__("hlt");
-		return EFI_SUCCESS;
-
-	} else if(Key.UnicodeChar == 'r') {
-
-		Print(L"Rebooting the system...\n");
-		return EFI_SUCCESS;
-
-	}
-
-
 	// Initialize framebuffer (GOP)
 
     EFI_GRAPHICS_OUTPUT_PROTOCOL *Gop;
@@ -121,13 +93,11 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
     uefi_call_wrapper(SystemTable->BootServices->LocateProtocol, 3, &GopGuid, NULL, (void **)&Gop);
 
-    //Print(L"\tFrame Buffer Base: %08X\n", Gop->Mode->FrameBufferBase);
-    //Print(L"\tFrame Buffer Size: %08X\n", Gop->Mode->FrameBufferSize);
 	// Set desired resolution
-    for (UINT32 i = 0; i < Gop->Mode->MaxMode; i++) {
+    for (int i = 0; i < Gop->Mode->MaxMode; i++) {
 
-        EFI_GRAPHICS_OUTPUT_MODE_INFORMATION    *info;
-        UINTN                                   infoSize;
+        EFI_GRAPHICS_OUTPUT_MODE_INFORMATION *info;
+        uint64_t infoSize;
         Gop->QueryMode(Gop, i, &infoSize, &info);
 
 		if(info->HorizontalResolution>=KAOS_SCREEN_WIDTH && info->VerticalResolution>=KAOS_SCREEN_HEIGHT) {
@@ -139,10 +109,8 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
     }
 
-	// Exiting UEFI land
 
-	uefi_call_wrapper(SystemTable->ConOut->ClearScreen, 1, SystemTable->ConOut);
-	Print(L"Booting the kernel...\n");
+	// Exiting UEFI land
 	uefi_call_wrapper(SystemTable->BootServices->ExitBootServices, 2, ImageHandle, MemMapKey);
 
 
