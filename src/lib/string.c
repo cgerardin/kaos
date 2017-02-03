@@ -77,7 +77,22 @@ wchar_t *strcat(wchar_t *dest, const wchar_t *src) {
 
 }
 
+wchar_t *strf(wchar_t *dest, int n, ...) {
 
+	va_list va;
+	va_start (va, n);
+
+	strcpy(dest, va_arg(va, wchar_t *));
+
+	for (int i = 1; i < n; i++) {
+		strcat(dest, va_arg(va, wchar_t *));
+	}
+	
+	va_end (va);
+
+	return dest;
+
+}
 
 
 

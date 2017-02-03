@@ -136,16 +136,14 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		}
 	}
 
-	// ...the OS name and version... (we need a correct printf-like function...)
+	// ...the OS name and version... 
 	wchar_t *osName = malloc_stub(200 * sizeof(wchar_t), lastAddress-8000);
-	wchar_t *nbr = malloc_stub(3 * sizeof(wchar_t), lastAddress-7500);
-	strcpy(osName, L"KaOS v");
-	strcat(osName, itoa(KAOS_VERSION_MAJOR, nbr, 10));
-	strcat(osName, L".");
-	strcat(osName, itoa(KAOS_VERSION_MINOR, nbr, 10));
-	strcat(osName, L".");
-	strcat(osName, itoa(KAOS_VERSION_REVISION, nbr, 10));
-	strcat(osName, L", the Karrot OS !");
+	wchar_t *osMajor = malloc_stub(3 * sizeof(wchar_t), lastAddress-7500);
+	wchar_t *osMinor = malloc_stub(3 * sizeof(wchar_t), lastAddress-7400);
+	wchar_t *osRevision = malloc_stub(3 * sizeof(wchar_t), lastAddress-7300);
+	strf(osName, 7, L"KaOS v", itoa(KAOS_VERSION_MAJOR, osMajor, 10), ".", 
+		itoa(KAOS_VERSION_MINOR, osMinor, 10), ".", 
+			itoa(KAOS_VERSION_REVISION, osRevision, 10), L", the Karrot OS !");
 	putString(Gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, osName);
 
 	// ...a line...
