@@ -120,23 +120,9 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	 
 	int k,l;
 	// Blank screen
-	for(k=0; k<KAOS_SCREEN_WIDTH*KAOS_SCREEN_HEIGHT; k++) { putPixel(Gop->Mode->FrameBufferBase, k, 0, 0x00000000); }
+	for(k=0; k<KAOS_SCREEN_WIDTH*KAOS_SCREEN_HEIGHT; k++) { putPixel(Gop->Mode->FrameBufferBase, k, 0, 0x00555753); }
 	
-	// Draw a 50x20 green box...
-	for(l=0; l<20; l++) {
-		for(k=0; k<50; k++) {
-			putPixel(Gop->Mode->FrameBufferBase, 10+k, 10+l, 0x00336600);
-		}
-	}
-	
-	// Draw a 50x80 orange box...
-	for(l=0; l<80; l++) {
-		for(k=0; k<50; k++) {
-			putPixel(Gop->Mode->FrameBufferBase, 10+k, 30+l, 0x00ff8000);
-		}
-	}
-
-	// ...the OS name and version... 
+	// Draw a "window" with the OS name and version in title
 	wchar_t *osName = kmalloc(200 * sizeof(wchar_t));
 	wchar_t *osMajor = kmalloc(3 * sizeof(wchar_t));
 	wchar_t *osMinor = kmalloc(3 * sizeof(wchar_t));
@@ -144,14 +130,11 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	strf(osName, 7, L"KaOS v", itoa(KAOS_VERSION_MAJOR, osMajor, 10), L".", 
 		itoa(KAOS_VERSION_MINOR, osMinor, 10), L".", 
 			itoa(KAOS_VERSION_REVISION, osRevision, 10), L", the Karrot OS !");
-	putString(Gop->Mode->FrameBufferBase, 70, 55, 0x00ff8000, osName);
-
-	// ...a line...
-	for(k=0; k<KAOS_SCREEN_WIDTH-20; k++) {
-		putPixel(Gop->Mode->FrameBufferBase, 10+k, 120, 0x00ff8000);
-	}
-
 	
+	//drawWindow(Gop->Mode->FrameBufferBase, 50, 150, 800, 480, 0x00000000, osName);
+
+
+
 
 	wchar_t *strTotalMem = kmalloc(50 * sizeof(wchar_t));
 	wchar_t *strFreeMem = kmalloc(50 * sizeof(wchar_t));
@@ -160,9 +143,9 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	
 
 	// Read keyboard raw input
-	int linePos=136;
-	int cursorPos=8;
-	int maxcharInLine=(KAOS_SCREEN_WIDTH/16)*16;
+	int linePos=180;
+	int cursorPos=55;
+	int maxcharInLine=(800/8)*8;
 	char key;
 	wchar_t c=0;
 	wchar_t *strKeycode = kmalloc(3 * sizeof(wchar_t));
@@ -170,6 +153,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	while(1) {
 
 
+		// Display memory information
 		for(l=0; l<64; l++) {
 			for(k=0; k<118; k++) {
 				putPixel(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-124+k, 10+l, 0x004e9a06);
@@ -181,28 +165,32 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-120, 42, 0x00ffffff, strFreeMem);
 
 
-		kmalloc(200000);
+		kmalloc(200000); // Memory stress test...
+
+
 
 
 		key = getScancode();
 		c=scancodeToChar(key);
 
-		// Display charcode in the lower right corner
+		// Display charcode
 		for(l=0; l<16; l++) {
-			for(k=0; k<36; k++) {
-				putPixel(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-54+k, KAOS_SCREEN_HEIGHT-150+l, 0x0075507b);
+			for(k=0; k<34; k++) {
+				putPixel(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-40+k, 82+l, 0x0075507b);
 			}
 		}
-		putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-50, KAOS_SCREEN_HEIGHT-150, 0x00ffffff, itoa(key, strKeycode, 16));
+		putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-36, 84, 0x00ffffff, itoa(key, strKeycode, 16));
 		
 		// We need a solid double-buffering solution here
 		// and simply redraw the entire screen buffer @fixme)
+
+		drawWindow(Gop->Mode->FrameBufferBase, 50, 150, 800, 480, 0x00000000, osName);
 		
 		// Draw char
 		switch(c) {
 
 			case '\n':
-				cursorPos=8;
+				cursorPos=55;
 				linePos+=16;
 				break;
 
@@ -223,8 +211,8 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
 				putChar(Gop->Mode->FrameBufferBase, cursorPos, linePos, 0x00ffffff, c);
 				cursorPos+=8;
-				if(cursorPos>=maxcharInLine-8) {
-					cursorPos=8;
+				if(cursorPos>=maxcharInLine+55-8) {
+					cursorPos=55;
 					linePos+=16;
 				}
 
