@@ -84,9 +84,8 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     }
 
 	// Initialize framebuffer (GOP)
-
-    EFI_GRAPHICS_OUTPUT_PROTOCOL *Gop;
-    EFI_GUID GopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
+    static EFI_GRAPHICS_OUTPUT_PROTOCOL *Gop;
+	static EFI_GUID GopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
 
     uefi_call_wrapper(SystemTable->BootServices->LocateProtocol, 3, &GopGuid, NULL, (void **)&Gop);
 
@@ -118,7 +117,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	// Initialize the quick'n'dirty memory manager
 	init_memory_manager(totalMemory, freeMemory, lastAddress);
 	 
-	int k,l;
+	int k;
 	// Blank screen
 	for(k=0; k<KAOS_SCREEN_WIDTH*KAOS_SCREEN_HEIGHT; k++) { putPixel(Gop->Mode->FrameBufferBase, k, 0, 0x00555753); }
 	
@@ -130,11 +129,31 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	strf(osName, 7, L"KaOS v", itoa(KAOS_VERSION_MAJOR, osMajor, 10), L".", 
 		itoa(KAOS_VERSION_MINOR, osMinor, 10), L".", 
 			itoa(KAOS_VERSION_REVISION, osRevision, 10), L", the Karrot OS !");
+
+
+
+
+	uint32_t gbuff1[Gop->Mode->FrameBufferSize*sizeof(uint32_t)];
+	int i=0;
+
+	blitScreenToBuffer(Gop->Mode->FrameBufferBase, gbuff1);
+
+	while(1) {
+
+		drawBoxToBuffer(gbuff1, 0, 0, KAOS_SCREEN_HEIGHT, KAOS_SCREEN_WIDTH, 0x00555753);
+		for(int j=0; j<100; j++) {	
+			drawBoxToBuffer(gbuff1, 100+i*2, 300+j, 3*i, 3*i, 0x00FF0000);
+			drawBoxToBuffer(gbuff1, 200+i*3, 400+j, 4*i, 4*i, 0x0000FF00);
+			drawBoxToBuffer(gbuff1, 300+i*4, 500+j, 5*i, 5*i, 0x000000FF);
+		}
+
+		blitBufferToScreen(Gop->Mode->FrameBufferBase, gbuff1);
+
+		i++;
 	
-	//drawWindow(Gop->Mode->FrameBufferBase, 50, 150, 800, 480, 0x00000000, osName);
-
-
-
+	}
+	
+/*
 
 	wchar_t *strTotalMem = kmalloc(50 * sizeof(wchar_t));
 	wchar_t *strFreeMem = kmalloc(50 * sizeof(wchar_t));
@@ -219,6 +238,8 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		}
 	
 	}
+
+*/
 
 }
 

@@ -7,12 +7,66 @@
 
 void putPixel(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t color) {
 
-    uint32_t* pixel = (uint32_t*)fb_base_addr;
+    uint32_t *pixel = (uint32_t *)fb_base_addr;
 
     pixel += (x+y*KAOS_SCREEN_WIDTH);
     *pixel++ = color;
 
 }
+
+uint32_t getPixel(uint64_t fb_base_addr, uint32_t x, uint32_t y) {
+
+    uint32_t *pixel = (uint32_t *)fb_base_addr;
+
+    pixel += (x+y*KAOS_SCREEN_WIDTH);
+	
+	return *pixel++;
+
+}
+
+
+
+
+
+void blitScreenToBuffer(uint64_t fb_base_addr, uint32_t *buffer) {
+
+    for(int k=0; k<KAOS_SCREEN_WIDTH*KAOS_SCREEN_HEIGHT; k++) { 
+		buffer[k]=getPixel(fb_base_addr, k, 0);
+	}
+
+}
+
+void blitBufferToScreen(uint64_t fb_base_addr, uint32_t *buffer) {
+
+    for(int k=0; k<KAOS_SCREEN_WIDTH*KAOS_SCREEN_HEIGHT; k++) { 
+		putPixel(fb_base_addr, k, 0, buffer[k]);
+	}
+
+}
+
+void drawBoxToBuffer(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color) {
+
+	for(int w=x; w<=x+width; w++) {
+	
+		for(int h=y; h<=y+height; h++) {
+
+			buffer[(w+h*KAOS_SCREEN_WIDTH)] = color;
+		
+		}
+		
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
 
 void drawBox(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t bcolor, uint32_t fcolor, uint32_t border_size) {
 
