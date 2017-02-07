@@ -21,6 +21,12 @@ void blitScreenToBuffer(uint64_t fb_base_addr, uint32_t *buffer);
 void blitBufferToScreen(uint64_t fb_base_addr, uint32_t *buffer);
 void drawBoxToBuffer(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color);
 
+void zputPixel(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t color);
+void zdrawBox(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t bcolor, uint32_t fcolor, uint32_t border_size);
+void zdrawWindow(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t bcolor, wchar_t *title);
+void zputChar(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t color, wchar_t charcode);
+void zputString(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t color, wchar_t *string);
+
 
 void drawBox(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t bcolor, uint32_t fcolor, uint32_t border_size);
 void drawWindow(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t bcolor, wchar_t *title);
