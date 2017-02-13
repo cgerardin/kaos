@@ -138,6 +138,9 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	uint32_t gbuff1[Gop->Mode->FrameBufferSize*sizeof(uint32_t)];
 	int i=0;
 
+	wchar_t c1=0;
+	wchar_t c2=' ';
+
 	while(1) {
 
 		// Make a string with current memory status
@@ -157,6 +160,12 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		i++;
 		if(i>22) i=0;
 
+		zdrawBox(gbuff1, 300, 170, 200, 20, 0x00ffffff, 0x006e3800, 2);
+		//zputString(gbuff1, 304, 174, 0x00000000, L"Hello again");
+		c1=scancodeToChar(getScancode());
+		if(c1!=0) c2=c1;
+		zputChar(gbuff1, 304, 174, 0x00000000, c2);
+
 		// Display the entire frame
 		blitBufferToScreen(Gop->Mode->FrameBufferBase, gbuff1);
 
@@ -165,66 +174,6 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		for(uint64_t m=0; m<20000; m+=1000) stress[m]='A';
 
 	}
-	
-/*
-
-
-	// Read keyboard raw input
-	int linePos=180;
-	int cursorPos=55;
-	int maxcharInLine=(800/8)*8;
-	char key;
-	wchar_t c=0;
-	wchar_t *strKeycode = kmalloc(3 * sizeof(wchar_t));
-
-	while(1) {
-
-		key = getScancode();
-		c=scancodeToChar(key);
-
-		// Display charcode
-		for(l=0; l<16; l++) {
-			for(k=0; k<34; k++) {
-				putPixel(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-40+k, 82+l, 0x0075507b);
-			}
-		}
-		putString(Gop->Mode->FrameBufferBase, KAOS_SCREEN_WIDTH-36, 84, 0x00ffffff, itoa(key, strKeycode, 16));
-		
-		// Draw char
-		switch(c) {
-
-			case '\n':
-				cursorPos=55;
-				linePos+=16;
-				break;
-
-			case '\b':
-				cursorPos-=8;
-				if(cursorPos<8) {
-					cursorPos=maxcharInLine-16;
-					linePos-=16;
-				}
-				for(l=0; l<16; l++) {
-					for(k=0; k<8; k++) {
-						putPixel(Gop->Mode->FrameBufferBase, cursorPos+k, linePos+l, 0x00000000);
-					}
-				}
-				break;
-
-			default:
-
-				putChar(Gop->Mode->FrameBufferBase, cursorPos, linePos, 0x00ffffff, c);
-				cursorPos+=8;
-				if(cursorPos>=maxcharInLine+55-8) {
-					cursorPos=55;
-					linePos+=16;
-				}
-
-		}
-	
-	}
-
-*/
 
 }
 

@@ -26,19 +26,20 @@ char scanScancode() {
 char getScancode() {
 
 	char c=0;
-	do {
+	//do {
 	
 		if(inb(0x60)!=c) {
 		
 			c=inb(0x60);
 			if(c>0) {
 				outb(0x60, 0);  // Empty buffer
-				return c;
 			}
-		
+			
+			
 		}
+return c;
 		
-	} while(1);
+	//} while(1);
 	
 }
 
