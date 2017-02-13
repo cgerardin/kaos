@@ -1,4 +1,4 @@
-EXEC			= bmp2h
+EXEC			= ppm2h
 CC				= clang
 DEBUG			= true
 CFLAGS			= -std=c11 -Wall
@@ -13,7 +13,7 @@ all: $(EXEC)
 	
 $(EXEC): 
 	@mkdir -p ../../../tools/
-	@$(CC) $(CFLAGS) -o ../../../tools/$@ main.c bitmap.c
+	@$(CC) $(CFLAGS) -o ../../../tools/$@ main.c
 
 .PHONY: clean
 
