@@ -31,12 +31,28 @@ void zputPixel(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t color) {
 
 }
 
+void zblit(uint32_t *source, uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
+
+	uint32_t p=0;
+	for(int h=y; h<=y+height-1; h++) {
+		
+		for(int w=x; w<=x+width-1; w++) {
+	
+			if(source[p]!=ALPHA_COLOR)
+				zputPixel(buffer, w, h, source[p]);
+			p++;
+
+		}
+	
+	}
+
+}
 
 void zdrawBox(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t bcolor, uint32_t fcolor, uint32_t border_size) {
 
-	for(int w=x; w<=x+width; w++) {
-	
-		for(int h=y; h<=y+height; h++) {
+	for(int h=y; h<=y+height; h++) {
+
+		for(int w=x; w<=x+width; w++) {
 		
 			zputPixel(buffer, w, h, bcolor);
 		
@@ -61,8 +77,8 @@ void zdrawBox(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t
 
 void zdrawWindow(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t bcolor, wchar_t *title) {
 
-	zdrawBox(buffer, x, y, width, height, bcolor, 0x00f57900, 2);
-	zdrawBox(buffer, x, y, width, 20, 0x00f57900, 0, 0);
+	zdrawBox(buffer, x, y, width, height, bcolor, 0x006e3800, 2);
+	zdrawBox(buffer, x, y, width, 20, 0x006e3800, 0, 0);
 	zputString(buffer, x+4, y+3, 0x00ffffff, title);
 
 }

@@ -8,6 +8,10 @@
 #include "drivers/display.h"
 #include "drivers/keyboard.h"
 
+#include "pictures/cpu.h"
+#include "pictures/ram.h"
+
+
 EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
 	/*
@@ -127,42 +131,38 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 			itoa(KAOS_VERSION_REVISION, osRevision, 10), L", the Karrot OS !");
 
 	// Make a string with memory informations
-	wchar_t *strTotalMem = kmalloc(50 * sizeof(wchar_t));
-	wchar_t *strFreeMem = kmalloc(50 * sizeof(wchar_t));
-	wchar_t *memsize = kmalloc(20 * sizeof(wchar_t));
-
+	wchar_t *strMem = kmalloc(50 * sizeof(wchar_t));
+	wchar_t *memTotal = kmalloc(20 * sizeof(wchar_t));
+	wchar_t *memFree = kmalloc(20 * sizeof(wchar_t));
 
 	uint32_t gbuff1[Gop->Mode->FrameBufferSize*sizeof(uint32_t)];
 	int i=0;
 
 	while(1) {
 
+		// Make a string with current memory status
+		strf(strMem, 5, itoa(get_total_memory()/1024/1024, memTotal, 10), L" Mo", 
+			L" / ", itoa(get_free_memory()/1024/1024, memFree, 10), L" Mo");
+
 		// Draw background
-		drawBoxToBuffer(gbuff1, 0, 0, KAOS_SCREEN_WIDTH, KAOS_SCREEN_HEIGHT, 0x00555753);
+		drawBoxToBuffer(gbuff1, 0, 0, KAOS_SCREEN_WIDTH, KAOS_SCREEN_HEIGHT, 0x00babdb6);
 
-		// Draw memory information
-		for(int l=0; l<64; l++) {
-			for(int k=0; k<118; k++) {
-				zputPixel(gbuff1, KAOS_SCREEN_WIDTH-124+k, 10+l, 0x004e9a06);
-			}
-		}
-		strf(strTotalMem, 3, L"TOTAL : ", itoa(get_total_memory()/1024/1024, memsize, 10), L" Mo");
-		strf(strFreeMem, 3, L"FREE : ", itoa(get_free_memory()/1024/1024, memsize, 10), L" Mo");
-		zputString(gbuff1, KAOS_SCREEN_WIDTH-120, 26, 0x00ffffff, strTotalMem);
-		zputString(gbuff1, KAOS_SCREEN_WIDTH-120, 42, 0x00ffffff, strFreeMem);
-
-		// Draw a window with scrolling content
-		zdrawWindow(gbuff1, 50, 150, 800, 480, 0x00000000, osName);		
-		zputString(gbuff1, 60, 180+(i*16), 0x00ffffff, L"Memory stress test in progress, please wait for the world's end...\n");
+		// Draw a window
+		zdrawWindow(gbuff1, 50, 130, 800, 480, 0x00ffffff, osName);
+		zblit(picture_cpu, gbuff1, 60, 170, picture_cpu_width, picture_cpu_height);
+		zblit(picture_ram, gbuff1, 60, 212, picture_ram_width, picture_ram_height);
+		zputString(gbuff1, 102, 178, 0x00000000, L"Unknown CPU @ 0 Mhz");
+		zputString(gbuff1, 102, 220, 0x00000000, strMem);
+		zputString(gbuff1, 60, 236+(i*16), 0x00cc0000, L"Memory stress test in progress, please wait for the world's end...\n");
 		i++;
-		if(i>26) i=0;
-		
+		if(i>22) i=0;
+
 		// Display the entire frame
 		blitBufferToScreen(Gop->Mode->FrameBufferBase, gbuff1);
 
 		// Memory overflow test... due to the stupid memory allocator, this must kill the kernel's code in memory
-		char *stress=kmalloc(200000);
-		for(uint64_t m=0; m<200000; m+=1000) stress[m]='A';
+		char *stress=kmalloc(20000);
+		for(uint64_t m=0; m<20000; m+=1000) stress[m]='A';
 
 	}
 	
