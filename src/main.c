@@ -1,6 +1,7 @@
 #include <efi.h>
 #include <efilib.h>
 #include "main.h"
+#include "cpu.h"
 #include "memory.h"
 #include "gui.h"
 #include "lib/types.h"
@@ -130,6 +131,10 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		itoa(KAOS_VERSION_MINOR, osMinor, 10), L".", 
 			itoa(KAOS_VERSION_REVISION, osRevision, 10), L", the Karrot OS !");
 
+	// Make a string with CPU informations
+	wchar_t *strCpu = kmalloc(50 * sizeof(wchar_t));
+	strf(strCpu, 2, detect_cpu(), L" CPU @ 0 Mhz");
+
 	// Make a string with memory informations
 	wchar_t *strMem = kmalloc(50 * sizeof(wchar_t));
 	wchar_t *memTotal = kmalloc(20 * sizeof(wchar_t));
@@ -154,7 +159,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		drawWindow(gbuff1, 50, 130, 800, 480, 0x00ffffff, osName);
 		drawPicture(picture_cpu, gbuff1, 60, 170, picture_cpu_width, picture_cpu_height, ALPHA_COLOR);
 		drawPicture(picture_ram, gbuff1, 60, 212, picture_ram_width, picture_ram_height, ALPHA_COLOR);
-		drawString(gbuff1, 102, 178, 0x00000000, L"Unknown CPU @ 0 Mhz");
+		drawString(gbuff1, 102, 178, 0x00000000, strCpu);
 		drawString(gbuff1, 102, 220, 0x00000000, strMem);
 		drawString(gbuff1, 60, 236+(i*16), 0x00cc0000, L"Memory stress test in progress, please wait for the world's end...\n");
 		i++;
