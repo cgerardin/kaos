@@ -8,32 +8,30 @@
 #include "../lib/types.h"
 
 #define KAOS_FONTS_SIZE 8*16*255
-//#define KAOS_SCREEN_WIDTH 1920
-//#define KAOS_SCREEN_HEIGHT 1080
 #define KAOS_SCREEN_WIDTH 1024
 #define KAOS_SCREEN_HEIGHT 768
 
 #define ALPHA_COLOR 15991028
 
-void putPixel(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t color);
-uint32_t getPixel(uint64_t fb_base_addr, uint32_t x, uint32_t y);
+/*
+ * Low-level functions
+ */
 
+uint32_t getPixel(uint64_t fb_base_addr, uint32_t x, uint32_t y);
+void putPixel(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t color);
 
 void blitScreenToBuffer(uint64_t fb_base_addr, uint32_t *buffer);
 void blitBufferToScreen(uint64_t fb_base_addr, uint32_t *buffer);
-void drawBoxToBuffer(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color);
 
-void zputPixel(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t color);
-void zblit(uint32_t *source, uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height);
-void zdrawBox(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t bcolor, uint32_t fcolor, uint32_t border_size);
-void zdrawWindow(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t bcolor, wchar_t *title);
-void zputChar(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t color, wchar_t charcode);
-void zputString(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t color, wchar_t *string);
+/*
+ * Drawing primitives
+ */
 
-
-void drawBox(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t bcolor, uint32_t fcolor, uint32_t border_size);
-void drawWindow(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t bcolor, wchar_t *title);
-void putChar(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t color, wchar_t charcode);
-void putString(uint64_t fb_base_addr, uint32_t x, uint32_t y, uint32_t color, wchar_t *string);
+void drawPoint(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t color);
+void drawRectangle(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color);
+void drawFillRectangle(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color);
+void drawChar(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t color, wchar_t charcode);
+void drawString(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t color, wchar_t *string);
+void drawPicture(uint32_t *picture, uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t alpha);
 
 #endif /* H_DRIVERS_DISPLAY */

@@ -2,6 +2,7 @@
 #include <efilib.h>
 #include "main.h"
 #include "memory.h"
+#include "gui.h"
 #include "lib/types.h"
 #include "lib/string.h"
 #include "drivers/io.h"
@@ -10,7 +11,6 @@
 
 #include "pictures/cpu.h"
 #include "pictures/ram.h"
-
 
 EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
@@ -148,23 +148,22 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 			L" / ", itoa(get_free_memory()/1024/1024, memFree, 10), L" Mo");
 
 		// Draw background
-		drawBoxToBuffer(gbuff1, 0, 0, KAOS_SCREEN_WIDTH, KAOS_SCREEN_HEIGHT, 0x00babdb6);
+		drawFillRectangle(gbuff1, 0, 0, KAOS_SCREEN_WIDTH, KAOS_SCREEN_HEIGHT, 0x00babdb6);
 
 		// Draw a window
-		zdrawWindow(gbuff1, 50, 130, 800, 480, 0x00ffffff, osName);
-		zblit(picture_cpu, gbuff1, 60, 170, picture_cpu_width, picture_cpu_height);
-		zblit(picture_ram, gbuff1, 60, 212, picture_ram_width, picture_ram_height);
-		zputString(gbuff1, 102, 178, 0x00000000, L"Unknown CPU @ 0 Mhz");
-		zputString(gbuff1, 102, 220, 0x00000000, strMem);
-		zputString(gbuff1, 60, 236+(i*16), 0x00cc0000, L"Memory stress test in progress, please wait for the world's end...\n");
+		drawWindow(gbuff1, 50, 130, 800, 480, 0x00ffffff, osName);
+		drawPicture(picture_cpu, gbuff1, 60, 170, picture_cpu_width, picture_cpu_height, ALPHA_COLOR);
+		drawPicture(picture_ram, gbuff1, 60, 212, picture_ram_width, picture_ram_height, ALPHA_COLOR);
+		drawString(gbuff1, 102, 178, 0x00000000, L"Unknown CPU @ 0 Mhz");
+		drawString(gbuff1, 102, 220, 0x00000000, strMem);
+		drawString(gbuff1, 60, 236+(i*16), 0x00cc0000, L"Memory stress test in progress, please wait for the world's end...\n");
 		i++;
 		if(i>22) i=0;
 
-		zdrawBox(gbuff1, 300, 170, 200, 20, 0x00ffffff, 0x006e3800, 2);
-		//zputString(gbuff1, 304, 174, 0x00000000, L"Hello again");
+		drawRectangle(gbuff1, 300, 170, 200, 20, 0x006e3800);
 		c1=scancodeToChar(getScancode());
 		if(c1!=0) c2=c1;
-		zputChar(gbuff1, 304, 174, 0x00000000, c2);
+		drawChar(gbuff1, 304, 174, 0x00000000, c2);
 
 		// Display the entire frame
 		blitBufferToScreen(Gop->Mode->FrameBufferBase, gbuff1);
