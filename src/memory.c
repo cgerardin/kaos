@@ -22,13 +22,6 @@ int memcmp(const void *a, const void *b, size_t n) {
     return 0;
 }
 
-void* malloc_stub(size_t size, uint64_t baseAddress) {
-
-	return (void*) baseAddress;
-
-}
-
-
 void init_memory_manager(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress) {
 
 	extern uint64_t memory_current_address;
@@ -54,5 +47,11 @@ void* kmalloc(size_t size) {
 	memory_free-=size;
 
 	return (void*) memory_current_address;
+
+}
+
+void kfree(void* address) {
+
+	// STUB
 
 }
