@@ -149,8 +149,8 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	while(1) {
 
 		// Make a string with current memory status
-		strf(strMem, 5, itoa(get_total_memory()/1024/1024, memTotal, 10), L" Mo", 
-			L" / ", itoa(get_free_memory()/1024/1024, memFree, 10), L" Mo");
+		strf(strMem, 5, itoa(get_free_memory()/1024/1024, memFree, 10), L" Mo", 
+			L" / ", itoa(get_total_memory()/1024/1024+1, memTotal, 10), L" Mo");
 
 		// Draw background
 		drawFillRectangle(gbuff1, 0, 0, KAOS_SCREEN_WIDTH, KAOS_SCREEN_HEIGHT, 0x00babdb6);
