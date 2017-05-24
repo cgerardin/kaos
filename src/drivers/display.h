@@ -5,11 +5,8 @@
 #ifndef H_DRIVERS_DISPLAY
 #define H_DRIVERS_DISPLAY
 
+#include "../00_configuration.h"
 #include "../lib/types.h"
-
-#define KAOS_FONTS_SIZE 8*16*255
-#define KAOS_SCREEN_WIDTH 1024
-#define KAOS_SCREEN_HEIGHT 768
 
 #define ALPHA_COLOR 15991028
 

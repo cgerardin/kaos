@@ -3,7 +3,7 @@
  */
 
 #include "display.h"
-#include "../lib/string.h"
+
 #include "../fonts/system-8x16.h"
 
 /*
