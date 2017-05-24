@@ -8,7 +8,7 @@
 #include "lib/types.h"
 
 int memcmp(const void *a, const void *b, size_t n);
-void* malloc_stub(size_t size, uint64_t baseAddress);
+void *memcpy(char *dst, char *src, int n);
 
 void init_memory_manager(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress);
 uint64_t get_total_memory();

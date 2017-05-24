@@ -47,6 +47,16 @@ wchar_t *itoa(int value, wchar_t *string, int base) {
 	
 }
 
+int strlen(wchar_t *s) {
+
+	int i=0;
+	while (*s++) {
+		i++;
+	}
+
+	return i;
+}
+
 wchar_t *strcpy(wchar_t *dest, const wchar_t *src) {
 
 	int p=0;
