@@ -24,7 +24,7 @@ Clone the GIT repository :
 #### All distributions
 
 ```
-$ git clone git@bitbucket.org:cgerardin/kaos.git
+$ git clone https://cgerardin@bitbucket.org/cgerardin/kaos.git
 ```
 
 ### 3 - Build and run
