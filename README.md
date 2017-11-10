@@ -6,7 +6,7 @@
 
 First, ensure that all dependencies are installed :
 
-#### Debian
+#### Debian / Ubuntu / Windows 10 Linux's subsystem
 
 ```
 # apt install git make clang-4.0 gnu-efi mtools qemu-system-x86 ovmf
@@ -31,8 +31,18 @@ $ git clone https://cgerardin@bitbucket.org/cgerardin/kaos.git
 
 Build the kernel, copy it into a disk image and run it in QEMU :
 
-#### All distributions
+#### Linux
 ```
 $ cd kaos
+$ make buildrun
+```
+
+#### Windows 10 Linux's subsystem
+
+- Install and run an X server like VcXsrv (https://sourceforge.net/projects/vcxsrv/)
+
+```
+$ cd kaos
+$ export DISPLAY=0:0
 $ make buildrun
 ```
