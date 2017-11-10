@@ -1,6 +1,6 @@
 # README
 
-## Quick start (GNU/Linux)
+## Quick start
 
 ### 1 - Dependencies
 
@@ -31,18 +31,19 @@ $ git clone https://cgerardin@bitbucket.org/cgerardin/kaos.git
 
 Build the kernel, copy it into a disk image and run it in QEMU :
 
-#### Linux
-```
-$ cd kaos
-$ make buildrun
-```
+#### Fedora
+
+- First, adapte the Makefile according to the comments marked 'Fedora :'.
 
 #### Windows 10 Linux's subsystem
 
-- Install and run an X server like VcXsrv (https://sourceforge.net/projects/vcxsrv/)
+- First, install and run an X server like [VcXsrv](https://sourceforge.net/projects/vcxsrv/), then run :
+```
+$ export DISPLAY=0:0
+```
 
+#### All systems
 ```
 $ cd kaos
-$ export DISPLAY=0:0
 $ make buildrun
 ```
