@@ -23,7 +23,7 @@ OVMF			= /usr/share/ovmf/OVMF.fd
 											# Debian : /usr/share/ovmf/OVMF.fd
 											# Fedora : /usr/share/edk2/ovmf/OVMF_CODE.fd
 QEMU			= qemu-system-$(ARCH)
-QEMU_OPTS		= -cpu qemu64 -m 2048
+QEMU_OPTS		= -cpu Broadwell -m 2048
 ifeq ($(KVM),true)
 	QEMU_OPTS	+= -enable-kvm
 endif
