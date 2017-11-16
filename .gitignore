@@ -4,3 +4,5 @@
 /src/*.so
 /src/lib/*.o
 /src/drivers/*.o
+
+/.*
