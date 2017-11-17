@@ -18,11 +18,7 @@
 /* Kernel main */
 void kmain(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress, EFI_GRAPHICS_OUTPUT_PROTOCOL *framebuffer) {
 
-	uint32_t bitmap[framebuffer->Mode->FrameBufferSize*sizeof(uint32_t)]; // Buffer used for graphic output
-
-	// Initialize the quick'n'dirty memory manager
-	init_memory_manager(totalMemory, freeMemory, lastAddress);
-
+	// Initialize GDT
 	struct gdtr {
 		uint16_t limit;
 		uint64_t base ;
@@ -30,6 +26,12 @@ void kmain(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress, EFI_
 
 	struct gdtr gdt;
 	asm volatile ("lgdtq %0" : : "m" (gdt));
+
+	// Initialize the quick'n'dirty memory manager
+	init_memory_manager(totalMemory, freeMemory, lastAddress);
+
+	// Buffer used for graphic output
+	uint32_t bitmap[framebuffer->Mode->FrameBufferSize*sizeof(uint32_t)]; 
 
 	// Main loop
 	while(1) {
@@ -54,7 +56,6 @@ void kmain(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress, EFI_
 
 /* Make a string with OS name and version */
 wchar_t *kernelName() {
-
 	
 	wchar_t *osName = kmalloc(200 * sizeof(wchar_t));
 	wchar_t *osMajor = kmalloc(3 * sizeof(wchar_t));
