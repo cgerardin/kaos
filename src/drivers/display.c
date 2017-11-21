@@ -64,204 +64,166 @@ void drawLine(uint32_t *buffer, uint32_t x1, uint32_t y1, uint32_t x2, uint32_t 
 
 	int dx, dy;
 	int e;
-  
-  dx = x2 - x1;
-  if(dx != 0) {
-    if(dx > 0) {
-	  dy = y2 - y1;
-      if(dy != 0) {
-        if(dy > 0) {
-          // vecteur oblique dans le 1er quadran
-          
-          if(dx >= dy) {
-            // vecteur diagonal ou oblique proche de l’horizontale, dans le 1er octant
-            //déclarer entier e ;
-			e = dx;
-			dx = dx * 2;
-			dy = dy * 2; // e est positif
-            while(1) {  // déplacements horizontaux
-			  drawPoint(buffer, x1, y1, color);
-			  x1 = x1 + 1;
-			  if(x1 == x2) break;
-			  e = e - dy;
-              if(e < 0) {
-                y1 = y1 + 1 ;  // déplacement diagonal
-                e = e + dx;
-              }
-            }
-          } else {
-            // vecteur oblique proche de la verticale, dans le 2d octant
-            //déclarer entier e ;
-			e = dy;
-            dy = dy * 2;
-			dx = dx * 2;  // e est positif
-            while(1) {  // déplacements verticaux
-              drawPoint(buffer, x1, y1, color);
-			  y1 = y1 + 1;
-			  if(y1 == y2) break;
-			  e = e - dx;
-              if(e < 0) {
-                x1 = x1 + 1;  // déplacement diagonal
-                e = e + dy;
-              }
-            }
-          }
-          
-        } else {  // dy < 0 (et dx > 0)
-          // vecteur oblique dans le 4e cadran
-          
-          if(dx >= -dy) {
-            // vecteur diagonal ou oblique proche de l’horizontale, dans le 8e octant
-            //déclarer entier e ;
-            e = dx;
-			dx = dx * 2;
-			dy = dy * 2;  // e est positif
-            while(1) {  // déplacements horizontaux
-              drawPoint(buffer, x1, y1, color);
-			  x1 = x1 + 1;
-              if(x1 == x2) break;
-			  e = e + dy;
-              if(e < 0) {
-                y1 = y1 - 1;  // déplacement diagonal
-                e = e + dx;
-              }
-            }
-          } else {  // vecteur oblique proche de la verticale, dans le 7e octant
-            //déclarer entier e ;
-			e = dy;
-            dy = dy * 2;
-			dx = dx * 2;  // e est négatif
-            while(1) {  // déplacements verticaux
-              drawPoint(buffer, x1, y1, color);
-			  y1 = y1 -1;
-			  if(y1 == y2) break;
-			  e = e + dx;
-              if(e > 0) {
-                x1 = x1 + 1;  // déplacement diagonal
-                e = e + dy;
-              }
-            }
-          }
-          
-        }
-      } else {  // dy = 0 (et dx > 0)
-        
-        // vecteur horizontal vers la droite
-        do {
-          drawPoint(buffer, x1, y1, color);
-		  x1 = x1 + 1;
-        } while(x1 != x2);
-        
-      }
-    } else {  // dx < 0
-	  dy = y2 - y1;
-      if (dy != 0) {
-        if(dy > 0) {
-          // vecteur oblique dans le 2d quadran
-          
-          if(-dx >= dy) {
-            // vecteur diagonal ou oblique proche de l’horizontale, dans le 4e octant
-            //déclarer entier e ;
-			e = dx;
-            dx = dx * 2; 
-			dy = dy * 2;  // e est négatif
-            while(1) {  // déplacements horizontaux
-              drawPoint(buffer, x1, y1, color);
-			  x1 = x1 - 1;
-			  if(x1 == x2) break;
-			  e = e + dy;
-              if(e >= 0) {
-                y1 = y1 + 1;  // déplacement diagonal
-                e = e + dx;
-              }
-            }
-          } else {
-            // vecteur oblique proche de la verticale, dans le 3e octant
-            //déclarer entier e ;
-			e = dy;
-            dy = dy * 2;
-			dx = dx * 2;  // e est positif
-            while(1) {  // déplacements verticaux
-              drawPoint(buffer, x1, y1, color);
-			  y1 = y1 + 1;
-			  if(y1 == y2) break;
-			  e = e + dx;
-              if(e <= 0) {
-                x1 = x1 - 1;  // déplacement diagonal
-                e = e + dy;
-              }
-            }
-          }
-          
-        } else {  // dy < 0 (et dx < 0)
-          // vecteur oblique dans le 3e cadran
-          
-          if(dx <= dy) {
-            // vecteur diagonal ou oblique proche de l’horizontale, dans le 5e octant
-            //déclarer entier e ;
-			e = dx;
-            dx = dx * 2;
-			dy = dy * 2;  // e est négatif
-            while(1) {  // déplacements horizontaux
-              drawPoint(buffer, x1, y1, color);
-			  x1 = x1 - 1;
-			  if(x1 == x2) break;
-			  e = e - dy;
-              if (e >= 0) {
-                y1 = y1 - 1;  // déplacement diagonal
-                e = e + dx;
-              }
-            }
-          } else {  // vecteur oblique proche de la verticale, dans le 6e octant
-            //déclarer entier e ;
-			e = dy;
-            dy = dy * 2;
-			dx = dx * 2;  // e est négatif
-            while(1) {  // déplacements verticaux
-              drawPoint(buffer, x1, y1, color);
-			  y1 = y1 - 1;
-              if(y1 == y2) break;
-			  e = e - dx;
-              if(e >= 0) {
-                x1 = x1 - 1;  // déplacement diagonal
-                e = e + dy;
-              }
-            }
-          }
-          
-        }
-      } else {  // dy = 0 (et dx < 0)
-        
-        // vecteur horizontal vers la gauche
-        do {
-          drawPoint(buffer, x1, y1, color);
-		  x1 = x1 - 1;
-        } while (x1 != x2);
-        
-      }
-    }
-  } else {  // dx = 0
-	dy = y2 - y1;
-    if(dy != 0) {
-      if(dy > 0) {
-        
-        // vecteur vertical croissant
-        do {
-          drawPoint(buffer, x1, y1, color);
-		  y1 = y1 + 1;
-        } while (y1 != y2);
-        
-      } else {  // dy < 0 (et dx = 0)
-        
-        // vecteur vertical décroissant
-        do {
-          drawPoint(buffer, x1, y1, color);
-		  y1 = y1 - 1;
-		} while (y1 != y2);
-        
-      }
-    }
-  }
+
+	dx = x2 - x1;
+	if (dx != 0) {
+		if (dx > 0) {
+			dy = y2 - y1;
+			if (dy != 0) {
+				if (dy > 0) {
+					if (dx >= dy) {
+						e = dx;
+						dx = dx * 2;
+						dy = dy * 2;
+						while (1) {
+							drawPoint(buffer, x1, y1, color);
+							x1++;
+							if (x1 == x2) break;
+							e = e - dy;
+							if (e < 0) {
+								y1++;
+								e = e + dx;
+							}
+						}
+					} else {
+						e = dy;
+						dy = dy * 2;
+						dx = dx * 2;
+						while (1) {
+							drawPoint(buffer, x1, y1, color);
+							y1++;
+							if (y1 == y2) break;
+							e = e - dx;
+							if (e < 0) {
+								x1++;
+								e = e + dy;
+							}
+						}
+					}
+				} else {
+					if (dx >= -dy) {
+						e = dx;
+						dx = dx * 2;
+						dy = dy * 2;
+						while (1) {
+							drawPoint(buffer, x1, y1, color);
+							x1++;
+							if (x1 == x2) break;
+							e = e + dy;
+							if (e < 0) {
+								y1--;
+								e = e + dx;
+							}
+						}
+					} else {
+						e = dy;
+						dy = dy * 2;
+						dx = dx * 2;
+						while (1) {
+							drawPoint(buffer, x1, y1, color);
+							y1--;
+							if (y1 == y2) break;
+							e = e + dx;
+							if (e > 0) {
+								x1++;
+								e = e + dy;
+							}
+						}
+					}
+				}
+			} else {
+				do {
+					drawPoint(buffer, x1, y1, color);
+					x1++;
+				} while (x1 != x2);
+			}
+		} else {
+			dy = y2 - y1;
+			if (dy != 0) {
+				if (dy > 0) {
+					if (-dx >= dy) {
+						e = dx;
+						dx = dx * 2;
+						dy = dy * 2;
+						while (1) {
+							drawPoint(buffer, x1, y1, color);
+							x1--;
+							if (x1 == x2) break;
+							e = e + dy;
+							if (e >= 0) {
+								y1++;
+								e = e + dx;
+							}
+						}
+					} else {
+						e = dy;
+						dy = dy * 2;
+						dx = dx * 2;
+						while (1) {
+							drawPoint(buffer, x1, y1, color);
+							y1++;
+							if (y1 == y2) break;
+							e = e + dx;
+							if (e <= 0) {
+								x1--;
+								e = e + dy;
+							}
+						}
+					}
+				} else {
+					if (dx <= dy) {
+						e = dx;
+						dx = dx * 2;
+						dy = dy * 2;
+						while (1) {
+							drawPoint(buffer, x1, y1, color);
+							x1--;
+							if (x1 == x2) break;
+							e = e - dy;
+							if (e >= 0) {
+								y1--;
+								e = e + dx;
+							}
+						}
+					} else {
+						e = dy;
+						dy = dy * 2;
+						dx = dx * 2;
+						while (1) {
+							drawPoint(buffer, x1, y1, color);
+							y1--;
+							if (y1 == y2) break;
+							e = e - dx;
+							if (e >= 0) {
+								x1--;
+								e = e + dy;
+							}
+						}
+					}
+				}
+			} else {
+				do {
+					drawPoint(buffer, x1, y1, color);
+					x1--;
+				} while (x1 != x2);
+			}
+		}
+	} else {
+		dy = y2 - y1;
+		if (dy != 0) {
+			if (dy > 0) {
+				do {
+					drawPoint(buffer, x1, y1, color);
+					y1++;
+				} while (y1 != y2);
+			} else {
+				do {
+					drawPoint(buffer, x1, y1, color);
+					y1--;
+				} while (y1 != y2);
+			}
+		}
+	}
 
 }
 
