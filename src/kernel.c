@@ -46,7 +46,7 @@ void kmain(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress, EFI_
 		// Draw another window displaying hardware informations
 		int hInfoX = KAOS_SCREEN_WIDTH-50-200;
 		int hInfoY = 50;
-		drawWindow(bitmap, hInfoX, hInfoY, 200, 80, L"Hardware informations");
+		drawWindow(bitmap, hInfoX, hInfoY, 200, 128, L"Hardware informations");
 		drawPicture(picture_cpu, bitmap, hInfoX+10, hInfoY+KAOS_GUI_WINDOW_TITLE_HEIGHT+10, picture_cpu_width, picture_cpu_height, ALPHA_COLOR);
 		drawPicture(picture_ram, bitmap, hInfoX+10, hInfoY+KAOS_GUI_WINDOW_TITLE_HEIGHT+20+picture_cpu_height, picture_ram_width, picture_ram_height, ALPHA_COLOR);
 		drawString(bitmap, hInfoX+10+picture_cpu_width+5, hInfoY+KAOS_GUI_WINDOW_TITLE_HEIGHT+10+KAOS_FONTS_HEIGHT/2, 0x00000000, cpuInfo());

@@ -238,9 +238,9 @@ void drawRectangle(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uin
 
 void drawFillRectangle(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color) {
 
-	for(int w=x; w<=x+width; w++) {
+	for(int w=x; w<x+width; w++) {
 	
-		for(int h=y; h<=y+height; h++) {
+		for(int h=y; h<y+height; h++) {
 
 			buffer[(w+h*KAOS_SCREEN_WIDTH)] = color;
 		
