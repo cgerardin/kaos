@@ -39,12 +39,18 @@ void kmain(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress, EFI_
 		// Draw background
 		drawFillRectangle(bitmap, 0, 0, KAOS_SCREEN_WIDTH, KAOS_SCREEN_HEIGHT, 0x00babdb6);
 
-		// Draw a window
-		drawWindow(bitmap, 50, 130, 800, 480, 0x00ffffff, kernelName());
-		drawPicture(picture_cpu, bitmap, 60, 170, picture_cpu_width, picture_cpu_height, ALPHA_COLOR);
-		drawPicture(picture_ram, bitmap, 60, 212, picture_ram_width, picture_ram_height, ALPHA_COLOR);
-		drawString(bitmap, 102, 178, 0x00000000, cpuInfo());
-		drawString(bitmap, 102, 220, 0x00000000, memInfo());
+		// Draw a fake "shell-like" window
+		drawWindowAdvanced(bitmap, 50, 100, 640, 360, kernelName(), 0x00000000);
+		drawString(bitmap, 50+10, 100+KAOS_GUI_WINDOW_TITLE_HEIGHT+10, 0x00dddddd, L"Welcome to the Karrot OS !");
+
+		// Draw another window displaying hardware informations
+		int hInfoX = KAOS_SCREEN_WIDTH-50-200;
+		int hInfoY = 50;
+		drawWindow(bitmap, hInfoX, hInfoY, 200, 80, L"Hardware informations");
+		drawPicture(picture_cpu, bitmap, hInfoX+10, hInfoY+KAOS_GUI_WINDOW_TITLE_HEIGHT+10, picture_cpu_width, picture_cpu_height, ALPHA_COLOR);
+		drawPicture(picture_ram, bitmap, hInfoX+10, hInfoY+KAOS_GUI_WINDOW_TITLE_HEIGHT+20+picture_cpu_height, picture_ram_width, picture_ram_height, ALPHA_COLOR);
+		drawString(bitmap, hInfoX+10+picture_cpu_width+5, hInfoY+KAOS_GUI_WINDOW_TITLE_HEIGHT+10+KAOS_FONTS_HEIGHT/2, 0x00000000, cpuInfo());
+		drawString(bitmap, hInfoX+10+picture_ram_width+5, hInfoY+KAOS_GUI_WINDOW_TITLE_HEIGHT+20+picture_cpu_height+KAOS_FONTS_HEIGHT/2, 0x00000000, memInfo());
 
 		// Display the entire frame
 		blitBufferToScreen(framebuffer->Mode->FrameBufferBase, bitmap);
@@ -61,9 +67,9 @@ wchar_t *kernelName() {
 	wchar_t *osMajor = kmalloc(3 * sizeof(wchar_t));
 	wchar_t *osMinor = kmalloc(3 * sizeof(wchar_t));
 	wchar_t *osRevision = kmalloc(3 * sizeof(wchar_t));
-	strf(osName, 7, L"KaOS v", itoa(KAOS_VERSION_MAJOR, osMajor, 10), L".", 
+	strf(osName, 6, L"KaOS v", itoa(KAOS_VERSION_MAJOR, osMajor, 10), L".", 
 		itoa(KAOS_VERSION_MINOR, osMinor, 10), L".", 
-			itoa(KAOS_VERSION_REVISION, osRevision, 10), L", the Karrot OS !");
+			itoa(KAOS_VERSION_REVISION, osRevision, 10));
 
 	return osName;
 }
