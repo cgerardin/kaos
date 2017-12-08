@@ -11,6 +11,7 @@
 #include "drivers/keyboard.h"
 #include "lib/string.h"
 
+#include "pictures/wallpaper.h"
 #include "pictures/cpu.h"
 #include "pictures/ram.h"
 
@@ -37,7 +38,8 @@ void kmain(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress, EFI_
 	while(1) {
 
 		// Draw background
-		drawFillRectangle(bitmap, 0, 0, KAOS_SCREEN_WIDTH, KAOS_SCREEN_HEIGHT, 0x00babdb6);
+		//drawFillRectangle(bitmap, 0, 0, KAOS_SCREEN_WIDTH, KAOS_SCREEN_HEIGHT, 0x00babdb6);
+		drawPicture(picture_wallpaper, bitmap, 0, 0, picture_wallpaper_width, picture_wallpaper_height, ALPHA_COLOR);
 
 		// Draw a fake "shell-like" window
 		drawWindowAdvanced(bitmap, 50, 100, 640, 360, kernelName(), 0x00000000);
