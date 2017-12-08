@@ -8,11 +8,11 @@ LIBS			= /usr/lib
 EFIINC			= /usr/include/efi
 EFIINCS			= -I$(EFIINC) -I$(EFIINC)/$(ARCH) -I$(EFIINC)/protocol
 EFI_CRT_OBJS	= $(LIBS)/crt0-efi-$(ARCH).o
-													# Debian : $(LIBS)/...
-													# Fedora : $(LIBS)/gnuefi/...
+												# Debian : $(LIBS)/...
+												# Fedora : $(LIBS)/gnuefi/...
 EFI_LDS			= $(LIBS)/elf_$(ARCH)_efi.lds
-														# Debian : $(LIBS)/...
-														# Fedora : $(LIBS)/gnuefi/...
+												# Debian : $(LIBS)/...
+												# Fedora : $(LIBS)/gnuefi/...
 CFLAGS			= $(EFIINCS) -xc -fno-stack-protector -fpic -fshort-wchar -mno-red-zone -Wall -Wno-incompatible-library-redeclaration -O2
 ifeq ($(ARCH),x86_64)
 	CFLAGS		+= -DHAVE_USE_MS_ABI
@@ -23,7 +23,7 @@ OVMF			= /usr/share/ovmf/OVMF.fd
 											# Debian : /usr/share/ovmf/OVMF.fd
 											# Fedora : /usr/share/edk2/ovmf/OVMF_CODE.fd
 QEMU			= qemu-system-$(ARCH)
-QEMU_OPTS		= -cpu Broadwell -m 2048
+QEMU_OPTS		= -cpu Broadwell -smp cores=2,threads=2 -m size=2048 -usb -k fr -name $(EXEC)
 ifeq ($(KVM),true)
 	QEMU_OPTS	+= -enable-kvm
 endif
@@ -41,8 +41,7 @@ run:
 	
 build: $(EXEC)-qemu.img
 	
-buildrun: $(EXEC)-qemu.img
-	@$(QEMU) -bios $(OVMF) -drive file=dist/$(EXEC)-qemu.img,if=ide,format=raw $(QEMU_OPTS)
+buildrun: $(EXEC)-qemu.img run
 
 $(EXEC)-qemu.img: data.img
 	@dd if=/dev/zero of=dist/$@ bs=512 count=93750 status=none
@@ -107,4 +106,3 @@ clean-tools:
 mrproper: clean
 	@rm -rf dist
 	$(MAKE) mrproper -C src/tools
-
