@@ -7,8 +7,8 @@
 
 #include "00_configuration.h"
 
-#include <efi.h>
 #include "lib/types.h"
+#include <efi.h> // For EFI_GRAPHICS_OUTPUT_PROTOCOL
 
 void kmain(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress, EFI_GRAPHICS_OUTPUT_PROTOCOL *framebuffer);
 

@@ -11,6 +11,4 @@
 #include <efilib.h>
 #include "lib/types.h"
 
-#include "kernel.h"
-
 #endif /* H_BOOT */

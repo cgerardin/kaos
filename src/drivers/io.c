@@ -8,9 +8,9 @@ uint8_t inb(uint16_t port) {
 
     uint8_t byte;
     asm volatile ("inb %1, %0" : "=a"(byte) : "Nd"(port));
-    
+
     return byte;
-    
+
 }
 
 uint16_t inw(uint16_t port) {
@@ -32,19 +32,19 @@ uint16_t inl(uint16_t port) {
 void outb(uint16_t port, uint8_t byte) {
 
     asm volatile ("outb %0, %1" : : "a"(byte), "Nd"(port));
-    
+
 }
 
 void outw(uint16_t port, uint16_t word) {
 
     asm volatile ("outw %0, %1" : : "a"(word), "Nd"(port));
-    
+
 }
 
 void outl(uint16_t port, uint32_t lword) {
 
     asm volatile ("outl %0, %1" : : "a"(lword), "Nd"(port));
-    
+
 }
 
 void io_wait(void) {

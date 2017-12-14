@@ -5,6 +5,7 @@
 #ifndef H_LIB_TYPES
 #define H_LIB_TYPES
 
+#include <stdbool.h>
 #include <wchar.h>
 
 typedef unsigned long uint64_t;

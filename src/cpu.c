@@ -8,17 +8,17 @@
 
 wchar_t *detect_cpu() {
 
-	unsigned long ebx, unused;
-	cpuid(0, unused, ebx, unused, unused);
+    unsigned long ebx, unused;
+    cpuid(0, unused, ebx, unused, unused);
 
-	switch(ebx) {
-		case 0x756e6547: /* Intel Magic Code */
-			return L"Intel";
-		case 0x68747541: /* AMD Magic Code */
-			return L"AMD";
-		default:
-			return L"Unknown";
-	}
+    switch (ebx) {
+        case 0x756e6547: /* Intel Magic Code */
+            return L"Intel";
+        case 0x68747541: /* AMD Magic Code */
+            return L"AMD";
+        default:
+            return L"Unknown";
+    }
 
 }
 
