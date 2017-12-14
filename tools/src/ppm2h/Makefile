@@ -12,8 +12,8 @@ SHELL			= /bin/bash
 all: $(EXEC)
 	
 $(EXEC): 
-	@mkdir -p ../../../tools/
-	@$(CC) $(CFLAGS) -o ../../../tools/$@ main.c
+	@mkdir -p ../../bin/
+	@$(CC) $(CFLAGS) -o ../../bin/$@ main.c
 
 .PHONY: clean
 
@@ -21,5 +21,5 @@ clean:
 	@rm -rf *.o
 
 mrproper: clean
-	@rm ../../../tools/$(EXEC)
+	@rm ../../bin/$(EXEC)
 

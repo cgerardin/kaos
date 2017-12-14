@@ -14,5 +14,5 @@ clean:
 	done
 	
 mrproper: 
-	@rm -r ../../tools
+	@rm -r ../bin
 

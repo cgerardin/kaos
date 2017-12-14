@@ -34,7 +34,7 @@ all: $(EXEC).efi tools
 
 .PHONY: tools
 tools:
-	$(MAKE) -C src/tools
+	$(MAKE) -C tools/src
 
 run: 
 	@$(QEMU) -bios $(OVMF) -drive file=dist/$(EXEC)-qemu.img,if=ide,format=raw $(QEMU_OPTS) 2>/dev/null
@@ -101,8 +101,8 @@ clean:
 	@rm -rf src/drivers/*.so
 	
 clean-tools:
-	$(MAKE) clean -C src/tools
+	$(MAKE) clean -C tools/src
 
 mrproper: clean
 	@rm -rf dist
-	$(MAKE) mrproper -C src/tools
+	$(MAKE) mrproper -C tools/src
