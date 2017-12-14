@@ -34,16 +34,56 @@ void kmain(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress, EFI_
 	// Buffer used for graphic output
 	uint32_t bitmap[framebuffer->Mode->FrameBufferSize*sizeof(uint32_t)]; 
 
+	int terminalX=0;
+	int terminalY=0;
+	wchar_t *terminalBuffer = kmalloc(8000 * sizeof(wchar_t));
+	int terminalCursor=0;
+	int terminalRow=0;
+	int terminalLine=0;
+	wchar_t key;
+
 	// Main loop
 	while(1) {
 
 		// Draw background
-		//drawFillRectangle(bitmap, 0, 0, KAOS_SCREEN_WIDTH, KAOS_SCREEN_HEIGHT, 0x00babdb6);
-		drawPicture(picture_wallpaper, bitmap, 0, 0, picture_wallpaper_width, picture_wallpaper_height, ALPHA_COLOR);
+            if(KAOS_DISPLAY_WALLPAPER) {
+                drawPicture(picture_wallpaper, bitmap, 0, 0, picture_wallpaper_width, picture_wallpaper_height, ALPHA_COLOR);
+            } else {
+                drawFillRectangle(bitmap, 0, 0, KAOS_SCREEN_WIDTH, KAOS_SCREEN_HEIGHT, 0x00babdb6);
+            }
 
 		// Draw a fake "shell-like" window
 		drawWindowAdvanced(bitmap, 50, 100, 640, 360, kernelName(), 0x00000000);
-		drawString(bitmap, 50+10, 100+KAOS_GUI_WINDOW_TITLE_HEIGHT+10, 0x00dddddd, L"Welcome to the Karrot OS !");
+		terminalX=50+10;
+		terminalY=100+KAOS_GUI_WINDOW_TITLE_HEIGHT+10;
+
+		key=getChar();
+		if(key>0) {
+			switch(key){
+				case '\n':
+					terminalBuffer[terminalCursor]=key;
+					terminalCursor++;
+					terminalLine++;
+					terminalRow=0;
+					break;
+				case '\b':
+					if(terminalBuffer[terminalCursor-1]=='\n') {
+						terminalLine--;
+					} else {
+						terminalRow--;
+					}
+					terminalCursor--;
+					break;
+				default:
+					terminalBuffer[terminalCursor]=key;
+					terminalCursor++;
+					terminalRow++;
+			}
+			terminalBuffer[terminalCursor]='\0';
+			
+		}
+		drawString(bitmap, terminalX, terminalY, 0x00dddddd, terminalBuffer);
+		drawFillRectangle(bitmap, terminalX+terminalRow*KAOS_FONTS_WIDTH+8-KAOS_FONTS_WIDTH, terminalY+KAOS_FONTS_HEIGHT*terminalLine, 2, KAOS_FONTS_HEIGHT, 0x00dddddd);
 
 		// Draw another window displaying hardware informations
 		int hInfoX = KAOS_SCREEN_WIDTH-50-200;
