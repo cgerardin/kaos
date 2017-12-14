@@ -37,7 +37,7 @@ tools:
 	$(MAKE) -C src/tools
 
 run: 
-	@$(QEMU) -bios $(OVMF) -drive file=dist/$(EXEC)-qemu.img,if=ide,format=raw $(QEMU_OPTS)
+	@$(QEMU) -bios $(OVMF) -drive file=dist/$(EXEC)-qemu.img,if=ide,format=raw $(QEMU_OPTS) 2>/dev/null
 	
 build: $(EXEC)-qemu.img
 	
