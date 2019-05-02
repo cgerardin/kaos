@@ -9,12 +9,12 @@ First, ensure that all dependencies are installed :
 #### Debian / Ubuntu / Windows 10 Linux's subsystem
 
 ```
-# apt install git make clang-4.0 gnu-efi mtools qemu-system-x86 ovmf
+# apt install git make clang-4.0 gnu-efi mtools qemu-system-x86 ovmf parted
 # update-alternatives --install /usr/bin/clang clang /usr/bin/clang-4.0 100
 ```
 #### Fedora
 ```
-# dnf install git make clang gnu-efi gnu-efi-devel mtools qemu-system-x86 edk2-ovmf
+# dnf install git make clang gnu-efi gnu-efi-devel mtools qemu-system-x86 edk2-ovmf parted
 ```
 
 ### 2 - Get the source code
