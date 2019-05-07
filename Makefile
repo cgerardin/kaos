@@ -45,9 +45,9 @@ buildrun: $(EXEC)-qemu.img run
 
 $(EXEC)-qemu.img: data.img
 	@dd if=/dev/zero of=dist/$@ bs=512 count=93750 status=none
-	@sudo parted dist/$@ -s -a minimal mklabel gpt
-	@sudo parted dist/$@ -s -a minimal mkpart EFI FAT16 2048s 93716s
-	@sudo parted dist/$@ -s -a minimal toggle 1 boot
+	@/sbin/parted dist/$@ -s -a minimal mklabel gpt
+	@/sbin/parted dist/$@ -s -a minimal mkpart EFI FAT16 2048s 93716s
+	@/sbin/parted dist/$@ -s -a minimal toggle 1 boot
 	@dd if=/tmp/$< of=dist/$@ bs=512 count=91669 seek=2048 conv=notrunc status=none
 
 data.img: $(EXEC).efi
