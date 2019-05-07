@@ -22,17 +22,6 @@ int memcmp(const void *a, const void *b, size_t n) {
     return 0;
 }
 
-void *memcpy(char *dst, char *src, int n) {
-
-    char *p = dst;
-
-    while (n--) {
-        *dst++ = *src++;
-    }
-
-    return p;
-}
-
 void init_memory_manager(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress) {
 
     extern uint64_t memory_current_address;
