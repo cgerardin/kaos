@@ -9,8 +9,7 @@ First, ensure that all dependencies are installed :
 #### Debian / Ubuntu / Windows 10 Linux's subsystem
 
 ```
-# apt install git make clang-4.0 gnu-efi mtools qemu-system-x86 ovmf parted
-# update-alternatives --install /usr/bin/clang clang /usr/bin/clang-4.0 100
+# apt install git make clang gnu-efi mtools qemu-system-x86 ovmf parted
 ```
 #### Fedora
 ```
