@@ -18,16 +18,6 @@
 /* Kernel main */
 void kmain(uint64_t totalMemory, uint64_t freeMemory, uint64_t lastAddress, EFI_GRAPHICS_OUTPUT_PROTOCOL *framebuffer) {
 
-    // Initialize GDT
-
-    struct gdtr {
-        uint16_t limit;
-        uint64_t base;
-    } __attribute__ ((packed));
-
-    struct gdtr gdt;
-    asm volatile ("lgdtq %0" : : "m" (gdt));
-
     // Initialize the quick'n'dirty memory manager
     init_memory_manager(totalMemory, freeMemory, lastAddress);
 

@@ -97,14 +97,11 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
     }
 
-
     // Exiting UEFI land
     uefi_call_wrapper(SystemTable->BootServices->ExitBootServices, 2, ImageHandle, MemMapKey);
 
-
-    // Loading kernel
+    // Loading kernel (Temporary workaround before loading a real executable from disk)
     kmain(totalMemory, freeMemory, lastAddress, framebuffer);
-
 
     return EFI_SUCCESS;
 }
