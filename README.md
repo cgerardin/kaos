@@ -4,7 +4,7 @@
 
 Small amateur operating system, to discover the basics.
 
-![screenshot.png|800x600](https://bitbucket.org/cgerardin/kaos/raw/a1807f46cbef1f2799c71c503b2e7d76df89cfcc/screenshot.png)
+![screenshot.png](https://bitbucket.org/cgerardin/kaos/raw/e3b9eefea451ebe3dff03f93bdd3b064b93021d0/screenshot.png)
 
 ## Quick start
 
