@@ -1,5 +1,11 @@
 # README
 
+## Overview
+
+Small amateur operating system, to discover the basics.
+
+![screenshot.png|800x600](https://bitbucket.org/cgerardin/kaos/raw/a1807f46cbef1f2799c71c503b2e7d76df89cfcc/screenshot.png)
+
 ## Quick start
 
 ### 1 - Dependencies
