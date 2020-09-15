@@ -38,7 +38,8 @@ Build the kernel, copy it into a disk image and run it in QEMU :
 
 - First, install and run an X server like [VcXsrv](https://sourceforge.net/projects/vcxsrv/), then run :
 ```
-$ export DISPLAY=0:0
+$ export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0
+$ export LIBGL_ALWAYS_INDIRECT=1
 ```
 
 #### All systems
