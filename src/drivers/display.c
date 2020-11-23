@@ -302,7 +302,8 @@ void drawString(uint32_t *buffer, uint32_t x, uint32_t y, uint32_t color, wchar_
 
 }
 
-void drawPicture(uint32_t *picture, uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t alpha) {
+void drawPicture(uint32_t *picture, uint32_t *buffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height,
+                 uint32_t alpha) {
 
     uint32_t p = 0;
     for (int h = y; h <= y + height - 1; h++) {

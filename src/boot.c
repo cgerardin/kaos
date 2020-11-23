@@ -19,7 +19,7 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     uint64_t firstAddress = 0;
     uint64_t lastAddress = 0;
 
-    uint64_t MemMapSize = sizeof (EFI_MEMORY_DESCRIPTOR)*16;
+    uint64_t MemMapSize = sizeof(EFI_MEMORY_DESCRIPTOR) * 16;
     uint64_t MemMapSizeOut = MemMapSize;
     uint64_t MemMapKey = 0;
     uint64_t MemMapDescriptorSize = 0;
@@ -36,12 +36,12 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
             break;
         }
 
-        status = SystemTable->BootServices->GetMemoryMap(&MemMapSizeOut, (EFI_MEMORY_DESCRIPTOR*) buffer,
-                &MemMapKey, &MemMapDescriptorSize, &MemMapDescriptorVersion);
+        status = SystemTable->BootServices->GetMemoryMap(&MemMapSizeOut, (EFI_MEMORY_DESCRIPTOR *) buffer,
+                                                         &MemMapKey, &MemMapDescriptorSize, &MemMapDescriptorVersion);
 
         if (status != EFI_SUCCESS) {
             FreePool(buffer);
-            MemMapSize += sizeof (EFI_MEMORY_DESCRIPTOR)*16;
+            MemMapSize += sizeof(EFI_MEMORY_DESCRIPTOR) * 16;
         }
 
     } while (status != EFI_SUCCESS);
@@ -50,24 +50,24 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
     if (buffer != NULL) {
 
         DescriptorCount = MemMapSizeOut / MemMapDescriptorSize;
-        MemoryDescriptorPtr = (EFI_MEMORY_DESCRIPTOR*) buffer;
+        MemoryDescriptorPtr = (EFI_MEMORY_DESCRIPTOR *) buffer;
 
         for (int i = 0; i < DescriptorCount; i++) {
 
-            MemoryDescriptorPtr = (EFI_MEMORY_DESCRIPTOR*) (buffer + (i * MemMapDescriptorSize));
+            MemoryDescriptorPtr = (EFI_MEMORY_DESCRIPTOR *) (buffer + (i * MemMapDescriptorSize));
 
             if (MemoryDescriptorPtr->Type == EfiLoaderData
-                    || MemoryDescriptorPtr->Type == EfiBootServicesData
-                    || MemoryDescriptorPtr->Type == EfiRuntimeServicesData
-                    || MemoryDescriptorPtr->Type == EfiConventionalMemory) {
+                || MemoryDescriptorPtr->Type == EfiBootServicesData
+                || MemoryDescriptorPtr->Type == EfiRuntimeServicesData
+                || MemoryDescriptorPtr->Type == EfiConventionalMemory) {
 
-                freeMemory += MemoryDescriptorPtr->NumberOfPages*EFI_PAGE_SIZE;
+                freeMemory += MemoryDescriptorPtr->NumberOfPages * EFI_PAGE_SIZE;
                 if (firstAddress == 0) firstAddress = MemoryDescriptorPtr->PhysicalStart;
                 lastAddress = MemoryDescriptorPtr->PhysicalStart + MemoryDescriptorPtr->NumberOfPages * EFI_PAGE_SIZE;
 
             }
 
-            totalMemory += MemoryDescriptorPtr->NumberOfPages*EFI_PAGE_SIZE;
+            totalMemory += MemoryDescriptorPtr->NumberOfPages * EFI_PAGE_SIZE;
 
         }
 

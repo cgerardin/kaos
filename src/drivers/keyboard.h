@@ -8,8 +8,11 @@
 #include "../lib/types.h"
 
 char scanScancode();
+
 char getScancode();
+
 wchar_t getChar();
+
 wchar_t scancodeToChar(char scancode);
 
 #endif /* H_DRIVERS_KEYBOARD */

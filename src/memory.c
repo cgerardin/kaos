@@ -12,8 +12,8 @@ int memcmp(const void *a, const void *b, size_t n) {
 
     for (size_t i = 0; i < n; ++i) {
 
-        unsigned char cur_a = ((const unsigned char*) a)[i];
-        unsigned char cur_b = ((const unsigned char*) b)[i];
+        unsigned char cur_a = ((const unsigned char *) a)[i];
+        unsigned char cur_b = ((const unsigned char *) b)[i];
 
         if (cur_a != cur_b) return cur_a - cur_b;
 
@@ -41,16 +41,16 @@ uint64_t get_free_memory() {
     return memory_free;
 }
 
-void* kmalloc(size_t size) {
+void *kmalloc(size_t size) {
 
     memory_current_address -= size;
     memory_free -= size;
 
-    return (void*) memory_current_address;
+    return (void *) memory_current_address;
 
 }
 
-void kfree(void* address) {
+void kfree(void *address) {
 
     // STUB
 
